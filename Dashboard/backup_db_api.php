@@ -88,7 +88,7 @@ class API
             $return .= ");\n";
           }
         }
-        $return .= "\n\n\n";
+        $return .= "";
       }
 
       // Get the name of the database
@@ -105,7 +105,11 @@ class API
       $handle = fopen($backupFilePath,"w+");
       fwrite($handle,$return);
       fclose($handle);
-      echo "Successfully backed up";
+
+      echo json_encode(array('status' => 'success',
+                                  'data' => 'Successfully Backed Up',
+                                  'method' => 'GET'
+                                ));
 
     }
 
@@ -124,16 +128,30 @@ class API
       $handle = fopen($filename,"r+");
       $contents = fread($handle,filesize($filename));
       $sql = explode(';',$contents);
+      array_pop($sql); // remove last element
+
+      
       foreach($sql as $query){
-        $result = mysqli_query($connection,$query);
-        if($result){
-            echo '<tr><td><br></td></tr>';
-            echo '<tr><td>'.$query.' <b>SUCCESS</b></td></tr>';
-            echo '<tr><td><br></td></tr>';
+          if (isset($query) && !empty($query) && $query !== ';' && $query !== '' && $query !== ' ') {
+            
+          
+            $result = mysqli_query($connection,$query);
+            if($result){
+                // echo '<tr><td><br></td></tr>';
+                // echo '<tr><td>'.$query.' <b>SUCCESS</b></td></tr>';
+                // echo '<tr><td><br></td></tr>';
+            }
+          }
         }
-      }
+        
+      
       fclose($handle);
-      echo 'Successfully imported';
+      // echo 'Successfully imported';
+
+      echo json_encode(array('status' => 'success',
+                                  'data' => 'Successfully Restored',
+                                  'method' => 'GET'
+                                ));
     }
 
     public function httpPut($payload)

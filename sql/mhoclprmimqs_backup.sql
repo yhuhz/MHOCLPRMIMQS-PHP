@@ -26,9 +26,6 @@ INSERT INTO tbl_dental VALUES("11","82","03232317","2023-04-19","Toothache","35"
 INSERT INTO tbl_dental VALUES("12","82","03232327","2023-04-19","toothache","34","120","60","tooth severely decayed. needs to be extracted","0000-00-00","0");
 
 
-
-
-
 CREATE TABLE `tbl_dental_chart` (
   `dental_chart_id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_id` varchar(200) NOT NULL,
@@ -169,9 +166,6 @@ INSERT INTO tbl_dental_chart VALUES("160","03232327","31","0");
 INSERT INTO tbl_dental_chart VALUES("161","03232327","32","0");
 
 
-
-
-
 CREATE TABLE `tbl_department` (
   `dept_id` int(11) NOT NULL AUTO_INCREMENT,
   `dept_code` varchar(200) NOT NULL,
@@ -187,9 +181,6 @@ INSERT INTO tbl_department VALUES("4","PHM","Pharmacy","0");
 INSERT INTO tbl_department VALUES("5","FD","Front Desk","0");
 INSERT INTO tbl_department VALUES("6","ADMIN","Admin Office","0");
 INSERT INTO tbl_department VALUES("7","IMZN","Immunization Only","0");
-
-
-
 
 
 CREATE TABLE `tbl_household` (
@@ -220,9 +211,6 @@ INSERT INTO tbl_household VALUES("17","Hiram","2023-03-01","0");
 INSERT INTO tbl_household VALUES("18","Reolo","2023-03-01","0");
 
 
-
-
-
 CREATE TABLE `tbl_immunization` (
   `immunization_id` int(11) NOT NULL AUTO_INCREMENT,
   `immunizer_id` int(11) NOT NULL,
@@ -244,9 +232,6 @@ INSERT INTO tbl_immunization VALUES("2","73","03232306","2023-04-04","2023-05-16
 INSERT INTO tbl_immunization VALUES("3","69","03232306","2023-04-12","2023-05-17","test vax","test com","0");
 INSERT INTO tbl_immunization VALUES("4","69","03232306","2023-04-12","2023-04-22","test vax 2","test com 2","0");
 INSERT INTO tbl_immunization VALUES("5","69","03232306","2023-04-12","2023-04-25","test vax 3","test com 3","0");
-
-
-
 
 
 CREATE TABLE `tbl_medicine_inventory` (
@@ -275,9 +260,6 @@ INSERT INTO tbl_medicine_inventory VALUES("1","Paracetamol","Biogesic","Analgesi
 INSERT INTO tbl_medicine_inventory VALUES("2","Ibuprofen","Medicol","NSAID","test","test1","test","test","2023-04-04","2026-04-16","250","LGU","2023-04-13","69","0");
 INSERT INTO tbl_medicine_inventory VALUES("3","Paracetamol","Biogesic","Analgesic","500mg","Tablet","1456-1578","13-08-247","2023-04-17","2027-04-26","100","DOH","2023-04-18","69","0");
 INSERT INTO tbl_medicine_inventory VALUES("4","Vitex negundo L. Lagundi Leaf","Ascof Lagundi","Cough Suppressant","600mg","Capsule","12478","157-25","2023-04-17","2028-04-05","150","DOH","2023-04-18","69","0");
-
-
-
 
 
 CREATE TABLE `tbl_medicine_release` (
@@ -309,9 +291,6 @@ INSERT INTO tbl_medicine_release VALUES("4","03212301","0","2","1","10","2023-04
 INSERT INTO tbl_medicine_release VALUES("5","","69","6","1","29","2023-04-13","69","0");
 INSERT INTO tbl_medicine_release VALUES("7","03232307","0","1","1","3","2023-04-15","69","0");
 INSERT INTO tbl_medicine_release VALUES("8","","68","2","2","15","2023-04-15","69","0");
-
-
-
 
 
 CREATE TABLE `tbl_opd` (
@@ -363,9 +342,6 @@ INSERT INTO tbl_opd VALUES("28","03232312","2023-04-19","36","120","60","165","6
 INSERT INTO tbl_opd VALUES("29","03232347","2023-04-19","35","120","60","155","59","4","36","stomachache","82","72","","0000-00-00","0");
 
 
-
-
-
 CREATE TABLE `tbl_opd_disease` (
   `opd_disease_id` int(11) NOT NULL AUTO_INCREMENT,
   `opd_id` int(11) NOT NULL,
@@ -394,9 +370,6 @@ INSERT INTO tbl_opd_disease VALUES("157","4","UTI","2023-01-12");
 INSERT INTO tbl_opd_disease VALUES("158","4","Dengue","2023-01-12");
 
 
-
-
-
 CREATE TABLE `tbl_opd_lab_results` (
   `lab_result_id` int(11) NOT NULL AUTO_INCREMENT,
   `opd_id` int(11) NOT NULL,
@@ -416,9 +389,6 @@ INSERT INTO tbl_opd_lab_results VALUES("86","28","Salmonella in vomit");
 INSERT INTO tbl_opd_lab_results VALUES("87","22","Virus in urine");
 INSERT INTO tbl_opd_lab_results VALUES("88","20","Scarred stomach lining");
 INSERT INTO tbl_opd_lab_results VALUES("89","4","Low blood count");
-
-
-
 
 
 CREATE TABLE `tbl_patient_info` (
@@ -515,9 +485,6 @@ INSERT INTO tbl_patient_info VALUES("04192306","18","Reolo","Lourdes","Regalado"
 INSERT INTO tbl_patient_info VALUES("04192307","15","Millares","Natividad","Renoso","","0","1939-09-23","Magogon","","NA","82","2023-04-19","0");
 
 
-
-
-
 CREATE TABLE `tbl_prenatal` (
   `prenatal_id` int(11) NOT NULL AUTO_INCREMENT,
   `midwife_id` int(11) NOT NULL,
@@ -537,9 +504,6 @@ CREATE TABLE `tbl_prenatal` (
 
 INSERT INTO tbl_prenatal VALUES("1","71","03232301","2023-01-05","0","0","Pregnancy is normal.","2023-03-29","0");
 INSERT INTO tbl_prenatal VALUES("2","71","03232303","2023-02-03","1","1","All seems good","2023-03-29","0");
-
-
-
 
 
 CREATE TABLE `tbl_prenatal_checkup` (
@@ -567,9 +531,6 @@ INSERT INTO tbl_prenatal_checkup VALUES("3","2","175","58","37","120","60","77",
 INSERT INTO tbl_prenatal_checkup VALUES("4","2","175","58","37","120","60","77","77","2023-07-08","2023-08-02","Pregnancy is okay.","0");
 
 
-
-
-
 CREATE TABLE `tbl_pwd` (
   `pwd_id` varchar(200) NOT NULL,
   `patient_id` varchar(200) NOT NULL,
@@ -585,9 +546,6 @@ INSERT INTO tbl_pwd VALUES("PWD-0125","04192301","Physical Disability","0");
 INSERT INTO tbl_pwd VALUES("PWD-1103","04192304","Physical Disability","0");
 INSERT INTO tbl_pwd VALUES("PWD-1900","04192305","Physical Disability","0");
 INSERT INTO tbl_pwd VALUES("PWD-3001","04192306","Physical Disability","0");
-
-
-
 
 
 CREATE TABLE `tbl_queue` (
@@ -617,9 +575,6 @@ INSERT INTO tbl_queue VALUES("131","1","04032306","1","0","0");
 INSERT INTO tbl_queue VALUES("132","2","03232317","1","0","0");
 
 
-
-
-
 CREATE TABLE `tbl_senior_citizen` (
   `senior_citizen_id` varchar(200) NOT NULL,
   `patient_id` varchar(200) NOT NULL,
@@ -636,9 +591,6 @@ INSERT INTO tbl_senior_citizen VALUES("SC-4423","04192305","0");
 INSERT INTO tbl_senior_citizen VALUES("SC-5244","04192304","0");
 INSERT INTO tbl_senior_citizen VALUES("SC-5560","04192303","0");
 INSERT INTO tbl_senior_citizen VALUES("SC-7022","04192307","0");
-
-
-
 
 
 CREATE TABLE `tbl_supplies_inventory` (
@@ -662,9 +614,6 @@ INSERT INTO tbl_supplies_inventory VALUES("1","Gloves","Glove","2022-04-05","202
 INSERT INTO tbl_supplies_inventory VALUES("2","Pfizer Syringe","Syringe","2023-03-01","2026-03-01","800","piece","DOH","2023-04-14","69","0");
 INSERT INTO tbl_supplies_inventory VALUES("3","Test Kits","Test Kits","2023-04-11","2024-04-11","400","piece","LGU","2023-04-14","69","0");
 INSERT INTO tbl_supplies_inventory VALUES("4","Bandages","Bandage","2023-04-15","2027-04-15","200","piece","DOH","2023-04-14","69","0");
-
-
-
 
 
 CREATE TABLE `tbl_supply_release` (
@@ -691,9 +640,6 @@ INSERT INTO tbl_supply_release VALUES("1","1","68","1","100","2023-04-04","69","
 INSERT INTO tbl_supply_release VALUES("2","1","69","2","15","2023-04-14","69","0");
 INSERT INTO tbl_supply_release VALUES("3","1","70","1","5","2023-04-14","69","1");
 INSERT INTO tbl_supply_release VALUES("4","2","71","3","5","2023-04-15","69","0");
-
-
-
 
 
 CREATE TABLE `tbl_users` (
@@ -731,6 +677,3 @@ INSERT INTO tbl_users VALUES("79","DentalTest","$2y$10$x9dXPGoeGaJZKHQxYVhiwOfBA
 INSERT INTO tbl_users VALUES("80","PrenatalTest","$2y$10$083AAV4ff0XhBi/P8yA8vOuFEQUFCVt65O6MaYT5Y98laPFwXC/oa","Edit and View","Prenatal","","","2023-04-01","12345678901","1","3","Prenatal Staff","2","2023-04-19","0");
 INSERT INTO tbl_users VALUES("81","PharmacyTest","$2y$10$5HMd0USyWfvSn/zfVAl4euLj87Px3qZRAt7AK9zP7pdAlupUzCuly","Test","Pharmacy","","","2023-04-01","01234567845","0","4","Pharmacy Staff","2","2023-04-19","0");
 INSERT INTO tbl_users VALUES("82","FrontDeskTest","$2y$10$3YUQwqlEFKCbDxBDMte2TehZID237gh1JLWO10Fuazdvf70FrrPHK","Desk","Front","","","2023-04-01","12345678901","0","5","Front Desk Staff","2","2023-04-19","0");
-
-
-
