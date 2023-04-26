@@ -95,7 +95,6 @@ class API
       $databaseName = 'mhoclprmimqs';
 
       // Create a backup filename based on the current date and time
-      // $backupFilename = $databaseName . '_' . date('Ymd_His') . '.sql';
       $backupFilename = 'mhoclprmimqs_backup.sql';
 
       // Create the full path to the backup file in the specified folder
@@ -130,17 +129,12 @@ class API
       $sql = explode(';',$contents);
       array_pop($sql); // remove last element
 
-      
+
       foreach($sql as $query){
           if (isset($query) && !empty($query) && $query !== ';' && $query !== '' && $query !== ' ') {
             
           
             $result = mysqli_query($connection,$query);
-            if($result){
-                // echo '<tr><td><br></td></tr>';
-                // echo '<tr><td>'.$query.' <b>SUCCESS</b></td></tr>';
-                // echo '<tr><td><br></td></tr>';
-            }
           }
         }
         
