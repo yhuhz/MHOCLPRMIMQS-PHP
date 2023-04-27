@@ -62,6 +62,10 @@ class API
                                   ));
 
       } else {
+        $this->db->where('department', 5);
+        $this->db->orderBy('queue_number', 'asc');
+        $queue['Front_Desk'] = $this->db->get('tbl_queue');
+
         $this->db->where('department', 1);
         $this->db->orderBy('queue_number', 'asc');
         $queue['OPD'] = $this->db->get('tbl_queue');
@@ -101,7 +105,7 @@ class API
 
         //CHECK IF PATIENT ALREADY ON QUEUE FOR SAME DEPT
 
-        $this->db->where('department', $payload['department']);
+        // $this->db->where('department', $payload['department']);
         $this->db->where('patient_id', $payload['patient_id']);
         $check_queue = $this->db->get('tbl_queue');
         // print_r($check_queue); return;
@@ -115,10 +119,6 @@ class API
           //ADD TO QUEUE
           if ($payload['is_priority'] === 1) {
             $payload['queue_number'] = 'Priority ' . $payload['queue_number'];
-          }
-
-          if($current_queue === []) {
-            $payload['is_current'] = 1;
           }
 
           $this->db->insert('tbl_queue', $payload);
@@ -143,13 +143,83 @@ class API
     {
         $payload = (array) $payload;
 
+        if (isset($payload['done'])) {
+          if ($payload['department'] === 5) {
+            
+            if ($payload['priority'] === 0) {
+              $this->db->where('department', 1);
+            }
+            
+            $this->db->where('is_priority', $payload['priority']);
+            $this->db->orderBy('queue_id', 'DESC');
+            $queue = $this->db->get('tbl_queue', null, 'queue_number');
 
-        $this->db->where('queue_id', $payload['next_patient']);
-        $this->db->update('tbl_queue', array('is_current' => 1));
+            if ($queue != []) {
+              $queue = $queue[0]['queue_number'];
+              if(substr($queue, 0, 1) === 'P') {
+                $queue = trim($queue, 'Priority ');
+                $queue = intVal($queue) + 1;
+              } else {
+                $queue = intVal($queue) + 1;
+              }
 
-        if ($payload['current_patient'] !== null) {
-          $this->db->where('queue_id', $payload['current_patient']);
-          $this->db->delete('tbl_queue');
+            } else {
+              $queue = 1;
+            }
+
+            if ($payload['priority'] === 1) {
+              $queue = 'Priority ' . $queue;
+            }
+
+            $this->db->where('queue_id', $payload['current_patient']);
+            $this->db->update('tbl_queue', array('department' => 1, 'queue_number' => $queue, 'is_current' => 0));
+
+          } else {
+            $this->db->where('queue_id', $payload['current_patient']);
+            $this->db->delete('tbl_queue');
+          }
+        } else {
+          if ($payload['department'] === 5) {
+            
+            if ($payload['priority'] === 0) {
+              $this->db->where('department', 1);
+            }
+            
+            $this->db->where('is_priority', $payload['priority']);
+            $this->db->orderBy('queue_id', 'DESC');
+            $queue = $this->db->get('tbl_queue', null, 'queue_number');
+
+            if ($queue != []) {
+              $queue = $queue[0]['queue_number'];
+              if(substr($queue, 0, 1) === 'P') {
+                $queue = trim($queue, 'Priority ');
+                $queue = intVal($queue) + 1;
+              } else {
+                $queue = intVal($queue) + 1;
+              }
+
+            } else {
+              $queue = 1;
+            }
+
+            if ($payload['priority'] === 1) {
+              $queue = 'Priority ' . $queue;
+            }
+
+            $this->db->where('queue_id', $payload['current_patient']);
+            $this->db->update('tbl_queue', array('department' => 1, 'queue_number' => $queue, 'is_current' => 0));
+
+            $this->db->where('queue_id', $payload['next_patient']);
+            $this->db->update('tbl_queue', array('is_current' => 1));
+          } else {
+            $this->db->where('queue_id', $payload['next_patient']);
+            $this->db->update('tbl_queue', array('is_current' => 1));
+  
+            if ($payload['current_patient'] !== null) {
+              $this->db->where('queue_id', $payload['current_patient']);
+              $this->db->delete('tbl_queue');
+            }
+          }
         }
 
           echo json_encode(array('status' => 'success',
