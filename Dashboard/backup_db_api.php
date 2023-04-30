@@ -18,102 +18,92 @@ class API
       $this->db = new MysqliDB('localhost', 'root', '', 'mhoclprmimqs');
     }
 
-    public function exportDatabase($folderPath)
+    public function httpGet()
     {
-        // Database credentials
-        $host = 'localhost';
-        $user = 'root';
-        $password = '';
+
+      if (isset ($_GET['dbList'])) {
+        $folderPath = '../sql';
+
+        $file_list = [];
+        if (is_dir($folderPath)) {
+            if ($handle = opendir($folderPath)) {
+                while (($file = readdir($handle)) !== false) {
+                    if ($file != "." && $file != "..") {
+                        // echo $file . "<br>";
+                        array_push($file_list, $file);
+                    }
+                }
+                closedir($handle);
+            }
+        }
+
+        $file_list = array_reverse($file_list);
+        echo json_encode(array('status' => 'success',
+                                    'data' => $file_list,
+                                    'method' => 'GET'
+                                  ));
+
+      } else {
+        
+        $connection = mysqli_connect('localhost','root','','mhoclprmimqs');
+
+        $tables = array();
+        $result = mysqli_query($connection,"SHOW TABLES");
+        while($row = mysqli_fetch_row($result)){
+          $tables[] = $row[0];
+        }
+
+        $return = 'SET foreign_key_checks = 0;';
+        foreach($tables as $table){
+          $result = mysqli_query($connection,"SELECT * FROM ".$table);
+          $num_fields = mysqli_num_fields($result);
+
+          // $return .= 'DROP TABLE '.$table.';';
+          $row2 = mysqli_fetch_row(mysqli_query($connection,"SHOW CREATE TABLE ".$table));
+          $return .= "\n\n".$row2[1].";\n\n";
+
+          for($i=0;$i<$num_fields;$i++){
+            while($row = mysqli_fetch_row($result)){
+              $return .= "INSERT INTO ".$table." VALUES(";
+              for($j=0;$j<$num_fields;$j++){
+                $row[$j] = addslashes($row[$j]);
+                if(isset($row[$j])){ $return .= '"'.$row[$j].'"';}
+                else{ $return .= '""';}
+                if($j<$num_fields-1){ $return .= ',';}
+              }
+              $return .= ");\n";
+            }
+          }
+          $return .= "";
+        }
 
         // Get the name of the database
         $databaseName = 'mhoclprmimqs';
 
         // Create a backup filename based on the current date and time
-        $backupFilename = $databaseName . '_' . date('Ymd_His') . '.sql';
+        $backupFilename = 'mhoclprmimqs_backup' . '_' . date('Y-m-d-H-i') . '.sql';
 
         // Create the full path to the backup file in the specified folder
-        $backupFilePath = $folderPath . '/' . $backupFilename;
+        $backupFilePath = '../sql' . '/' . $backupFilename;
 
-        // Use mysqldump to create a backup of the database
-        $command = sprintf('mysqldump -u%s -p%s -h%s %s > %s',
-        $user,
-        $password,
-        $host,
-        $databaseName,
-        $backupFilePath
-        );
+        //save file
+        $handle = fopen($backupFilePath,"w+");
+        fwrite($handle,$return);
+        fclose($handle);
 
-        exec($command);
+        echo json_encode(array('status' => 'success',
+                                    'data' => 'Successfully Backed Up',
+                                    'method' => 'GET'
+                                  ));
 
-        // Return the path to the backup file
-        return $backupFilePath;
-    }
-
-    public function httpGet()
-    {
-        // // Export the database to a folder
-        // $backupFilePath = $this->exportDatabase('../sql');
-
-        // // Return a JSON response with the path to the backup file
-        // header('Content-Type: application/json');
-        // echo json_encode(array('backup_file_path' => $backupFilePath));
-
-
-      $connection = mysqli_connect('localhost','root','','mhoclprmimqs');
-
-      $tables = array();
-      $result = mysqli_query($connection,"SHOW TABLES");
-      while($row = mysqli_fetch_row($result)){
-        $tables[] = $row[0];
-      }
-
-      $return = 'SET foreign_key_checks = 0;';
-      foreach($tables as $table){
-        $result = mysqli_query($connection,"SELECT * FROM ".$table);
-        $num_fields = mysqli_num_fields($result);
-
-        // $return .= 'DROP TABLE '.$table.';';
-        $row2 = mysqli_fetch_row(mysqli_query($connection,"SHOW CREATE TABLE ".$table));
-        $return .= "\n\n".$row2[1].";\n\n";
-
-        for($i=0;$i<$num_fields;$i++){
-          while($row = mysqli_fetch_row($result)){
-            $return .= "INSERT INTO ".$table." VALUES(";
-            for($j=0;$j<$num_fields;$j++){
-              $row[$j] = addslashes($row[$j]);
-              if(isset($row[$j])){ $return .= '"'.$row[$j].'"';}
-              else{ $return .= '""';}
-              if($j<$num_fields-1){ $return .= ',';}
-            }
-            $return .= ");\n";
-          }
         }
-        $return .= "";
-      }
-
-      // Get the name of the database
-      $databaseName = 'mhoclprmimqs';
-
-      // Create a backup filename based on the current date and time
-      $backupFilename = 'mhoclprmimqs_backup' . date('Y-m-d-H-i') . 'sql';
-
-      // Create the full path to the backup file in the specified folder
-      $backupFilePath = '../sql' . '/' . $backupFilename;
-
-      //save file
-      $handle = fopen($backupFilePath,"w+");
-      fwrite($handle,$return);
-      fclose($handle);
-
-      echo json_encode(array('status' => 'success',
-                                  'data' => 'Successfully Backed Up',
-                                  'method' => 'GET'
-                                ));
 
     }
 
     public function httpPost($payload)
     {
+      $payload = (array) $payload;
+
       $connection = new mysqli('localhost', 'root', '');
       $drop_prev_db = "DROP DATABASE IF EXISTS mhoclprmimqs";
       $connection->query($drop_prev_db);
@@ -123,7 +113,7 @@ class API
 
       $connection->select_db('mhoclprmimqs');
 
-      $filename = '../sql/mhoclprmimqs_backup.sql';
+      $filename = '../sql/' . $payload['db'];
       $handle = fopen($filename,"r+");
       $contents = fread($handle,filesize($filename));
       $sql = explode(';',$contents);
