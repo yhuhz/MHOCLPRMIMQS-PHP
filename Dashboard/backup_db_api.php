@@ -95,7 +95,7 @@ class API
       $databaseName = 'mhoclprmimqs';
 
       // Create a backup filename based on the current date and time
-      $backupFilename = 'mhoclprmimqs_backup.sql';
+      $backupFilename = 'mhoclprmimqs_backup' . date('Y-m-d-H-i') . 'sql';
 
       // Create the full path to the backup file in the specified folder
       $backupFilePath = '../sql' . '/' . $backupFilename;
