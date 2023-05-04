@@ -560,7 +560,7 @@ CREATE TABLE `tbl_queue` (
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `queue_fk_dept_id` FOREIGN KEY (`department`) REFERENCES `tbl_department` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `queue_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_queue VALUES("122","Priority 1","04192301","1","1","1");
 INSERT INTO tbl_queue VALUES("123","Priority 2","04192306","1","1","0");
@@ -573,6 +573,7 @@ INSERT INTO tbl_queue VALUES("129","2","03232307","7","0","0");
 INSERT INTO tbl_queue VALUES("130","3","03232306","7","0","0");
 INSERT INTO tbl_queue VALUES("131","1","04032306","1","0","0");
 INSERT INTO tbl_queue VALUES("132","2","03232317","1","0","0");
+INSERT INTO tbl_queue VALUES("133","3","03232343","1","0","0");
 
 
 CREATE TABLE `tbl_senior_citizen` (
@@ -667,9 +668,9 @@ CREATE TABLE `tbl_users` (
 INSERT INTO tbl_users VALUES("67","basmayormbOPD67","$2y$10$ayRALUii2ePuoujphl5Bl.8BIdv61chP3L1zSm1KmazSsLXntC3kS","Basmayor","Mark Kenneth","Bataller","","1998-05-05","09488561235","0","2","Assistant","3","2023-03-18","0");
 INSERT INTO tbl_users VALUES("68","bocornDNTL68","$2y$10$U3vlvwlaUtZnCUG84W94tOTIAjNajkjiyPsUtIe1EDu8L9.E1tA1a","Boco","Roseler","Nasol","Jr","1998-05-05","09488561235","0","2","Doctor","2","2023-03-18","0");
 INSERT INTO tbl_users VALUES("69","pogingAdmin69","$2y$10$W4Q9MuV5gSnxM4oCZI6IGu25yxNiBtgz2pwlbk692WdjT5rLbTDt.","Grajo","Julius Albert","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
-INSERT INTO tbl_users VALUES("70","ardaleseOPD70","$2y$10$zcinjgZNSCPgsXHgHO/3Z.lXzG7s10mYtgvcExPP8497OA3lf3p6a","Ardales","Edmel","","","1998-05-05","09488561235","0","1","Doctor","2","2023-03-18","0");
-INSERT INTO tbl_users VALUES("71","aperinlOPD71","$2y$10$djgAWdpYRa9n2ALt/qMdCeAmkYvKvzNmjWzHPVYOBHQvpvq41DZte","Aperin","Lynnette","","","1998-05-05","09488561235","1","3","Midwife","3","2023-03-18","0");
-INSERT INTO tbl_users VALUES("72","esplanasADMIN72","$2y$10$IULIcy.DfQDA4je.5hQXR.n0EBgVu8pOMTeQ87msXbv2QqrDAVmAy","Esplana","Samuel","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("70","EdmelArdales70","$2y$10$GeFOdD3agFDabs0C/lH8eetNRA9EY0pHQTSKmf0e2qJgpa6f975d6","Ardales","Edmel","","","1998-05-05","09488561235","0","6","Doctor","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("71","LynnetteAperin71","$2y$10$ysuKMdzmHDxOg4Oi/WTa/eXALX8sAtRZSxhrCj4J8I230JuPw8Xl6","Aperin","Lynnette","","","1998-05-05","09488561235","1","6","Midwife","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("72","SamuelEsplana72","$2y$10$sNSaM3DnX3sZsfmhUhwDj.wRsFc9sgRO8Cc9oJ03S5XPdph0pmhWy","Esplana","Samuel","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
 INSERT INTO tbl_users VALUES("73","delacruzjsFD73","$2y$10$A3H06BTjwU1dTNZaGR12Mue7o3Zp.uc1TNat99CHoCqrHHH3OjKT.","De La Cruz","Juan","Santos","","1998-05-05","09488561235","0","5","Front Desk Staff","2","2023-03-19","0");
 INSERT INTO tbl_users VALUES("76","delacruzmsPNI76","$2y$10$sMxeysoVPmyPS.VmR8hnMOMZjRJA0YIMbPKeeEo1CAvBfRVGLYcWO","De La Cruz","Maria Clara","Santa Ana","","1987-05-02","09526132487","1","3","Midwife","2","2023-04-17","2");
 INSERT INTO tbl_users VALUES("78","OPDTest","$2y$10$PK9tpiVLemvbcvC5tIK7nOMf0maJnzgLYsjpTdaPhLj7onyGruj6e","Edit and View","OPD","","","2023-03-01","12345678910","0","1","OPD Staff","2","2023-04-19","0");
