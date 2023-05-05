@@ -85,8 +85,8 @@ class API
             $this->db->where('pnl.status', 0 );
           }
 
-          $this->db->orderBy('date_added', 'ASC');
-          $record = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id as record_id, date_added as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
+          $this->db->orderBy('pnl.date_added', 'ASC');
+          $record = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id as record_id, pnl.date_added as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //IMMUNIZATION
         } else if ($payload['record_type'] === "Immunization") {

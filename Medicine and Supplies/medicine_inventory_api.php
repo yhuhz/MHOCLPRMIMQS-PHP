@@ -71,7 +71,7 @@ class API
         $medicine_release_array = [];
 
         foreach($medicine_release as $release) {
-          if (isset($release['patient_id'])) {
+          if (isset($release['patient_id']) && $release['patient_id'] !== '') {
             $this->db->where('patient_id', $release['patient_id']);
             $name = $this->db->get('tbl_patient_info', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
 
