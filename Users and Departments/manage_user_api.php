@@ -199,13 +199,33 @@ class API
           unset($payload['mode']);
 
           //Random Generated Password
-          $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@';
-          $pass = array(); //remember to declare $pass as an array
-          $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-          for ($i = 0; $i < 10; $i++) {
-              $n = rand(0, $alphaLength);
-              $pass[] = $alphabet[$n];
+          $pass = []; //remember to declare $pass as an array
+          $alphabet_lowercase = 'abcdefghijklmnopqrstuvwxyz';
+          $alphabet_uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          $numbers = '1234567890';
+          $special_character = '@!_-';
+          
+          for($i = 0; $i < 3; $i++) {
+            $rand_lower = rand(0, strlen($alphabet_lowercase) - 1);            
+            array_push($pass, $alphabet_lowercase[$rand_lower]);
           }
+
+          for($i = 0; $i < 2; $i++) {
+            $rand_upper = rand(0, strlen($alphabet_uppercase) - 1);
+            array_push($pass, $alphabet_uppercase[$rand_upper]);
+          }
+
+          for($i = 0; $i < 2; $i++) {
+            $rand_number = rand(0, strlen($numbers) - 1);
+            array_push($pass, $numbers[$rand_number]);
+          }
+
+          for($i = 0; $i < 1; $i++) {
+            $rand_special = rand(0, strlen($special_character) - 1);
+            array_push($pass, $special_character[$rand_special]);
+          }
+
+          shuffle($pass);
           $password = implode($pass);
           $payload['password'] = password_hash($password, PASSWORD_DEFAULT);
 

@@ -17,12 +17,11 @@ CREATE TABLE `tbl_dental` (
   KEY `dental_fk_patient_id` (`patient_id`),
   CONSTRAINT `dental_fk_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `dental_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_dental VALUES("1","68","03212302","2023-03-28","Toothache","37","120","60","Rotten tooth #4. Need to be extracted.","2023-03-31","0");
 INSERT INTO tbl_dental VALUES("9","69","03212302","2023-04-16","Toothache","35","120","60","Test Test","2023-05-25","0");
-INSERT INTO tbl_dental VALUES("10","69","03212301","2023-04-16","Toothache","37","120","60","Tooth number 6 is for extraction.
-Tooth 5 is impacted.","2023-04-30","0");
+INSERT INTO tbl_dental VALUES("10","69","03212301","2023-04-16","Toothache","37","120","60","Tooth number 6 is for extraction.","2023-04-30","0");
 INSERT INTO tbl_dental VALUES("11","82","03232317","2023-04-19","Toothache","35","120","60","first molar decayed. tooth extraction needed","0000-00-00","0");
 INSERT INTO tbl_dental VALUES("12","82","03232327","2023-04-19","toothache","34","120","60","tooth severely decayed. needs to be extracted","0000-00-00","0");
 
@@ -35,7 +34,7 @@ CREATE TABLE `tbl_dental_chart` (
   PRIMARY KEY (`dental_chart_id`),
   KEY `dental_chart_fk_patient_id` (`patient_id`),
   CONSTRAINT `dental_chart_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=162 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=162 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_dental_chart VALUES("34","03212302","1","3");
 INSERT INTO tbl_dental_chart VALUES("35","03212302","2","0");
@@ -75,7 +74,7 @@ INSERT INTO tbl_dental_chart VALUES("68","03212301","3","0");
 INSERT INTO tbl_dental_chart VALUES("69","03212301","4","0");
 INSERT INTO tbl_dental_chart VALUES("70","03212301","5","0");
 INSERT INTO tbl_dental_chart VALUES("71","03212301","6","4");
-INSERT INTO tbl_dental_chart VALUES("72","03212301","7","5");
+INSERT INTO tbl_dental_chart VALUES("72","03212301","7","0");
 INSERT INTO tbl_dental_chart VALUES("73","03212301","8","0");
 INSERT INTO tbl_dental_chart VALUES("74","03212301","9","0");
 INSERT INTO tbl_dental_chart VALUES("75","03212301","10","0");
@@ -173,7 +172,7 @@ CREATE TABLE `tbl_department` (
   `dept_name` varchar(200) NOT NULL,
   `status` int(3) NOT NULL DEFAULT 0 COMMENT '0 = active, 1 = suspended, 2 = deleted	',
   PRIMARY KEY (`dept_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_department VALUES("1","OPD","Outpatient Department","0");
 INSERT INTO tbl_department VALUES("2","DNTL","Dental","0");
@@ -190,7 +189,7 @@ CREATE TABLE `tbl_household` (
   `date_added` date DEFAULT NULL,
   `status` int(3) NOT NULL DEFAULT 0 COMMENT '0 = active, 1 = deleted	',
   PRIMARY KEY (`household_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_household VALUES("1","Grajo","2023-03-01","0");
 INSERT INTO tbl_household VALUES("2","Basmayor","2023-03-01","0");
@@ -210,7 +209,6 @@ INSERT INTO tbl_household VALUES("15","Miralles","2023-03-01","0");
 INSERT INTO tbl_household VALUES("16","Cruz","2023-03-01","0");
 INSERT INTO tbl_household VALUES("17","Hiram","2023-03-01","0");
 INSERT INTO tbl_household VALUES("18","Reolo","2023-03-01","0");
-INSERT INTO tbl_household VALUES("22","Pancho","2023-05-06","0");
 
 
 CREATE TABLE `tbl_immunization` (
@@ -227,7 +225,7 @@ CREATE TABLE `tbl_immunization` (
   KEY `immunization_fk_patient_id` (`patient_id`),
   CONSTRAINT `immunization_fk_immunizer_id` FOREIGN KEY (`immunizer_id`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `immunization_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_immunization VALUES("1","71","03232307","2023-04-04","2023-06-25","MMR Vaccine","No allergic reactions","0");
 INSERT INTO tbl_immunization VALUES("2","73","03232306","2023-04-04","2023-05-16","MMR Vaccine","No allergic reactions","0");
@@ -256,9 +254,9 @@ CREATE TABLE `tbl_medicine_inventory` (
   KEY `med_inv_fk_added_by` (`added_by`),
   KEY `med_inv_fk_med_classification` (`med_classification`),
   CONSTRAINT `med_inv_fk_added_by` FOREIGN KEY (`added_by`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO tbl_medicine_inventory VALUES("1","Paracetamol","Biogesic","Analgesic","500mg/2mg","Tablet","22-11-2101","13-08-713","2023-03-01","2023-07-01","530","DOH","2023-04-01","69","0");
+INSERT INTO tbl_medicine_inventory VALUES("1","Paracetamol","Biogesic","Analgesic","500mg/2mg","Tablet","22-11-2101","13-08-713","2023-03-01","2026-03-01","530","DOH","2023-04-01","69","0");
 INSERT INTO tbl_medicine_inventory VALUES("2","Ibuprofen","Medicol","NSAID","test","test1","test","test","2023-04-04","2026-04-16","250","LGU","2023-04-13","69","0");
 INSERT INTO tbl_medicine_inventory VALUES("3","Paracetamol","Biogesic","Analgesic","500mg","Tablet","1456-1578","13-08-247","2023-04-17","2027-04-26","100","DOH","2023-04-18","69","0");
 INSERT INTO tbl_medicine_inventory VALUES("4","Vitex negundo L. Lagundi Leaf","Ascof Lagundi","Cough Suppressant","600mg","Capsule","12478","157-25","2023-04-17","2028-04-05","150","DOH","2023-04-18","69","0");
@@ -285,7 +283,7 @@ CREATE TABLE `tbl_medicine_release` (
   CONSTRAINT `med_release_fk_med_id` FOREIGN KEY (`medicine_id`) REFERENCES `tbl_medicine_inventory` (`medicine_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `med_release_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `med_release_fk_released_by` FOREIGN KEY (`released_by`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_medicine_release VALUES("1","","69","1","1","100","2023-04-04","69","0");
 INSERT INTO tbl_medicine_release VALUES("3","03212301","0","1","1","15","2023-04-13","69","0");
@@ -319,9 +317,9 @@ CREATE TABLE `tbl_opd` (
   CONSTRAINT `opd_doctor_id` FOREIGN KEY (`doctor_id`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `opd_prelim_fk_added_by` FOREIGN KEY (`preliminary_checkup_done_by`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `opd_prelim_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO tbl_opd VALUES("1","03212301","2023-03-14","35","120","60","163","70","72","75","Pain in the lower area","69","72","Patient has no jowa","2023-03-25","1");
+INSERT INTO tbl_opd VALUES("1","03212301","2023-03-14","35","120","60","163","70","72","75","Pain in the lower area","69","72","Patient has no jowa","2023-03-25","0");
 INSERT INTO tbl_opd VALUES("2","03212301","2023-03-08","37","120","60","163","70","70","72","Pain when urinating","73","69","Patient has UTI. Prescribed antibiotics. Patient should drink lots of fluids.","2023-03-25","0");
 INSERT INTO tbl_opd VALUES("4","03212302","2023-01-12","37","120","60","163","70","70","72","Heartbroken","73","67","Patient should take some bed rest","2023-05-11","0");
 INSERT INTO tbl_opd VALUES("7","03212301","2023-04-06","37","120","60","175","63","75","88","Loss of apetite","69","69","","0000-00-00","0");
@@ -352,8 +350,9 @@ CREATE TABLE `tbl_opd_disease` (
   PRIMARY KEY (`opd_disease_id`),
   KEY `opd_disease_fk_opd_id` (`opd_id`),
   CONSTRAINT `opd_disease_fk_opd_id` FOREIGN KEY (`opd_id`) REFERENCES `tbl_opd` (`opd_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+INSERT INTO tbl_opd_disease VALUES("141","2","UTI","2023-03-08");
 INSERT INTO tbl_opd_disease VALUES("144","1","Stress","2023-03-14");
 INSERT INTO tbl_opd_disease VALUES("145","1","Hemorrhoids","2023-03-14");
 INSERT INTO tbl_opd_disease VALUES("146","8","UTI","2023-03-14");
@@ -369,7 +368,6 @@ INSERT INTO tbl_opd_disease VALUES("155","29","Ulcer","2023-04-19");
 INSERT INTO tbl_opd_disease VALUES("156","25","Ulcer","2023-04-19");
 INSERT INTO tbl_opd_disease VALUES("157","4","UTI","2023-01-12");
 INSERT INTO tbl_opd_disease VALUES("158","4","Dengue","2023-01-12");
-INSERT INTO tbl_opd_disease VALUES("159","2","UTI","2023-03-08");
 
 
 CREATE TABLE `tbl_opd_lab_results` (
@@ -379,8 +377,10 @@ CREATE TABLE `tbl_opd_lab_results` (
   PRIMARY KEY (`lab_result_id`),
   KEY `lab_result_fk_opd_id` (`opd_id`),
   CONSTRAINT `lab_results_fk_opd_id` FOREIGN KEY (`opd_id`) REFERENCES `tbl_opd` (`opd_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+INSERT INTO tbl_opd_lab_results VALUES("79","2","Blood in urine");
+INSERT INTO tbl_opd_lab_results VALUES("80","2","Bacteria in urine");
 INSERT INTO tbl_opd_lab_results VALUES("82","1","Walang jowa");
 INSERT INTO tbl_opd_lab_results VALUES("83","8","Walang jowa");
 INSERT INTO tbl_opd_lab_results VALUES("84","23","Scarred stomach lining");
@@ -389,8 +389,6 @@ INSERT INTO tbl_opd_lab_results VALUES("86","28","Salmonella in vomit");
 INSERT INTO tbl_opd_lab_results VALUES("87","22","Virus in urine");
 INSERT INTO tbl_opd_lab_results VALUES("88","20","Scarred stomach lining");
 INSERT INTO tbl_opd_lab_results VALUES("89","4","Low blood count");
-INSERT INTO tbl_opd_lab_results VALUES("90","2","Blood in urine");
-INSERT INTO tbl_opd_lab_results VALUES("91","2","Bacteria in urine");
 
 
 CREATE TABLE `tbl_patient_info` (
@@ -413,7 +411,7 @@ CREATE TABLE `tbl_patient_info` (
   KEY `fk_added_by` (`added_by`),
   CONSTRAINT `patient_info_fk_added_by` FOREIGN KEY (`added_by`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `patient_info_fk_household_id` FOREIGN KEY (`household_id`) REFERENCES `tbl_household` (`household_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_patient_info VALUES("03212301","1","Grajo","Julius Albert","Areola","","0","1996-09-09","Tagaytay","Camalig","09468512312","69","2023-03-21","0");
 INSERT INTO tbl_patient_info VALUES("03212302","2","Basmayor","Mark Kenneth","Bataller","","0","1978-10-10","Outside Camalig","Bacacay, Albay","09269851328","82","2023-03-21","0");
@@ -478,7 +476,13 @@ INSERT INTO tbl_patient_info VALUES("04032308","8","Moya","Jayley Rose","Andes",
 INSERT INTO tbl_patient_info VALUES("04032309","9","Yap","John Albet","Alejo","","0","2023-03-23","Miti","Miti, Camalig, Albay","09269761328","69","2023-04-03","0");
 INSERT INTO tbl_patient_info VALUES("04032310","10","Atun","Rhian Mae","Abiera","","1","2023-03-19","Bongabong","Bongabong, Camalig, Albay","09267743557","69","2023-04-03","0");
 INSERT INTO tbl_patient_info VALUES("04042301","1","De La Cruz","Antonio","","","0","2015-04-04","Baligang","Baligang, Camalig","09451237851","69","2023-04-04","0");
-INSERT INTO tbl_patient_info VALUES("05062301","22","Pancho","Den Adrian","Dapadap","","0","2002-07-12","Outside Camalig","Sorsogon City, Sorsogon","09579761425","82","2023-05-06","0");
+INSERT INTO tbl_patient_info VALUES("04192301","1","Grajo","Dominic","Marquez","","0","2004-04-06","Tagaytay","","09459821321","82","2023-04-19","0");
+INSERT INTO tbl_patient_info VALUES("04192302","7","Antonino","Nicanor","Azagra","","0","1936-03-02","Ilawod","","NA","82","2023-04-19","0");
+INSERT INTO tbl_patient_info VALUES("04192303","12","Madrilejos","Corazon","Espina","","1","1940-06-20","Palanog","","NA","82","2023-04-19","0");
+INSERT INTO tbl_patient_info VALUES("04192304","13","Andes","Rodrigo","Peralta","Sr.","0","1941-08-19","Baligang","","NA","82","2023-04-19","0");
+INSERT INTO tbl_patient_info VALUES("04192305","14","Armenta","Salome","Rios","","0","1944-01-06","Bantonan","","NA","82","2023-04-19","0");
+INSERT INTO tbl_patient_info VALUES("04192306","18","Reolo","Lourdes","Regalado","","1","1946-05-08","Gapo","","NA","82","2023-04-19","0");
+INSERT INTO tbl_patient_info VALUES("04192307","15","Millares","Natividad","Renoso","","0","1939-09-23","Magogon","","NA","82","2023-04-19","0");
 
 
 CREATE TABLE `tbl_prenatal` (
@@ -496,7 +500,7 @@ CREATE TABLE `tbl_prenatal` (
   KEY `prenatal_fk_midwife_id` (`midwife_id`),
   CONSTRAINT `prenatal_fk_midwife_id` FOREIGN KEY (`midwife_id`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `prenatal_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_prenatal VALUES("1","71","03232301","2023-01-05","0","0","Pregnancy is normal.","2023-03-29","0");
 INSERT INTO tbl_prenatal VALUES("2","71","03232303","2023-02-03","1","1","All seems good","2023-03-29","0");
@@ -519,7 +523,7 @@ CREATE TABLE `tbl_prenatal_checkup` (
   PRIMARY KEY (`prenatal_checkup_id`),
   KEY `prenatal_checkup_fk_prenatal_id` (`prenatal_id`),
   CONSTRAINT `prenatal_checkup_fk_prenatal_id` FOREIGN KEY (`prenatal_id`) REFERENCES `tbl_prenatal` (`prenatal_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_prenatal_checkup VALUES("1","1","156","65","37","120","60","77","77","2023-03-29","2023-05-18","Pregnancy is normal. Patients needs lot of bed rest and vitamins.","0");
 INSERT INTO tbl_prenatal_checkup VALUES("2","2","175","58","38","120","60","77","77","2023-03-29","2023-05-01","Pregnancy is okay. Patient needs to drink some vitamins.","0");
@@ -535,9 +539,13 @@ CREATE TABLE `tbl_pwd` (
   PRIMARY KEY (`pwd_id`),
   KEY `pwd_fk_patient_id` (`patient_id`),
   CONSTRAINT `pwd_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_pwd VALUES("12test","03212302","Learning Disability","0");
+INSERT INTO tbl_pwd VALUES("PWD-0125","04192301","Physical Disability","0");
+INSERT INTO tbl_pwd VALUES("PWD-1103","04192304","Physical Disability","0");
+INSERT INTO tbl_pwd VALUES("PWD-1900","04192305","Physical Disability","0");
+INSERT INTO tbl_pwd VALUES("PWD-3001","04192306","Physical Disability","0");
 
 
 CREATE TABLE `tbl_queue` (
@@ -552,10 +560,20 @@ CREATE TABLE `tbl_queue` (
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `queue_fk_dept_id` FOREIGN KEY (`department`) REFERENCES `tbl_department` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `queue_fk_patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO tbl_queue VALUES("133","Priority 2","04032306","1","0","1");
-INSERT INTO tbl_queue VALUES("134","1","03232317","2","0","0");
+INSERT INTO tbl_queue VALUES("122","Priority 1","04192301","1","1","1");
+INSERT INTO tbl_queue VALUES("123","Priority 2","04192306","1","1","0");
+INSERT INTO tbl_queue VALUES("124","Priority 3","04192301","2","1","1");
+INSERT INTO tbl_queue VALUES("125","Priority 4","04192303","7","1","1");
+INSERT INTO tbl_queue VALUES("126","Priority 5","04192302","1","1","0");
+INSERT INTO tbl_queue VALUES("127","Priority 6","03232301","1","1","0");
+INSERT INTO tbl_queue VALUES("128","1","04032306","7","0","0");
+INSERT INTO tbl_queue VALUES("129","2","03232307","7","0","0");
+INSERT INTO tbl_queue VALUES("130","3","03232306","7","0","0");
+INSERT INTO tbl_queue VALUES("131","1","04032306","1","0","0");
+INSERT INTO tbl_queue VALUES("132","2","03232317","1","0","0");
+INSERT INTO tbl_queue VALUES("133","3","03232343","1","0","0");
 
 
 CREATE TABLE `tbl_senior_citizen` (
@@ -565,9 +583,15 @@ CREATE TABLE `tbl_senior_citizen` (
   PRIMARY KEY (`senior_citizen_id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `patient_id` FOREIGN KEY (`patient_id`) REFERENCES `tbl_patient_info` (`patient_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_senior_citizen VALUES("SC-0589","03232315","0");
+INSERT INTO tbl_senior_citizen VALUES("SC-1102","04192302","0");
+INSERT INTO tbl_senior_citizen VALUES("SC-3340","04192306","0");
+INSERT INTO tbl_senior_citizen VALUES("SC-4423","04192305","0");
+INSERT INTO tbl_senior_citizen VALUES("SC-5244","04192304","0");
+INSERT INTO tbl_senior_citizen VALUES("SC-5560","04192303","0");
+INSERT INTO tbl_senior_citizen VALUES("SC-7022","04192307","0");
 
 
 CREATE TABLE `tbl_supplies_inventory` (
@@ -585,9 +609,9 @@ CREATE TABLE `tbl_supplies_inventory` (
   PRIMARY KEY (`supply_id`),
   KEY `supplies_inv_fk_added_by` (`added_by`),
   CONSTRAINT `supplies_inv_fk_added_by` FOREIGN KEY (`added_by`) REFERENCES `tbl_users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO tbl_supplies_inventory VALUES("1","Gloves","Glove","2022-04-05","2023-06-29","200","piece","LGU","2023-04-04","69","0");
+INSERT INTO tbl_supplies_inventory VALUES("1","Gloves","Glove","2022-04-05","2026-04-15","700","piece","LGU","2023-04-04","69","0");
 INSERT INTO tbl_supplies_inventory VALUES("2","Pfizer Syringe","Syringe","2023-03-01","2026-03-01","800","piece","DOH","2023-04-14","69","0");
 INSERT INTO tbl_supplies_inventory VALUES("3","Test Kits","Test Kits","2023-04-11","2024-04-11","400","piece","LGU","2023-04-14","69","0");
 INSERT INTO tbl_supplies_inventory VALUES("4","Bandages","Bandage","2023-04-15","2027-04-15","200","piece","DOH","2023-04-14","69","0");
@@ -611,7 +635,7 @@ CREATE TABLE `tbl_supply_release` (
   CONSTRAINT `supply_release_fk_released_by` FOREIGN KEY (`released_by`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE,
   CONSTRAINT `supply_release_fk_supply_id` FOREIGN KEY (`supply_id`) REFERENCES `tbl_supplies_inventory` (`supply_id`) ON UPDATE CASCADE,
   CONSTRAINT `supply_release_fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`user_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO tbl_supply_release VALUES("1","1","68","1","100","2023-04-04","69","0");
 INSERT INTO tbl_supply_release VALUES("2","1","69","2","15","2023-04-14","69","0");
@@ -639,14 +663,14 @@ CREATE TABLE `tbl_users` (
   UNIQUE KEY `username` (`username`),
   KEY `fk_dept_id` (`department`),
   CONSTRAINT `fk_dept_id` FOREIGN KEY (`department`) REFERENCES `tbl_department` (`dept_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO tbl_users VALUES("67","basmayormbOPD67","$2y$10$ayRALUii2ePuoujphl5Bl.8BIdv61chP3L1zSm1KmazSsLXntC3kS","Basmayor","Mark Kenneth","Bataller","","1998-05-05","09488561235","0","2","Assistant","3","2023-03-18","0");
+INSERT INTO tbl_users VALUES("67","basmayormbOPD67","$2y$10$ZRDaGBwqXGA7grOu5bFTIue3YlU2vw9NokgVSkGPB.NkHSOkuwkO2","Basmayor","Mark Kenneth","Bataller","","1998-05-05","09488561235","0","2","Assistant","3","2023-03-18","0");
 INSERT INTO tbl_users VALUES("68","bocornDNTL68","$2y$10$U3vlvwlaUtZnCUG84W94tOTIAjNajkjiyPsUtIe1EDu8L9.E1tA1a","Boco","Roseler","Nasol","Jr","1998-05-05","09488561235","0","2","Doctor","2","2023-03-18","0");
-INSERT INTO tbl_users VALUES("69","pogingAdmin69","$2y$10$W4Q9MuV5gSnxM4oCZI6IGu25yxNiBtgz2pwlbk692WdjT5rLbTDt.","Grajo","Julius Albert","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
-INSERT INTO tbl_users VALUES("70","ardaleseOPD70","$2y$10$zcinjgZNSCPgsXHgHO/3Z.lXzG7s10mYtgvcExPP8497OA3lf3p6a","Ardales","Edmel","","","1998-05-05","09488561235","0","1","Doctor","2","2023-03-18","0");
-INSERT INTO tbl_users VALUES("71","aperinlOPD71","$2y$10$djgAWdpYRa9n2ALt/qMdCeAmkYvKvzNmjWzHPVYOBHQvpvq41DZte","Aperin","Lynnette","","","1998-05-05","09488561235","1","3","Midwife","3","2023-03-18","0");
-INSERT INTO tbl_users VALUES("72","esplanasADMIN72","$2y$10$IULIcy.DfQDA4je.5hQXR.n0EBgVu8pOMTeQ87msXbv2QqrDAVmAy","Esplana","Samuel","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("69","pogingAdmin69","$2y$10$r0cVYNyZQZGSaZySrryjaOTw1jxJGd.ZRPmvG2GUhsH/j27CuMR0G","Grajo","Julius Albert","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("70","EdmelArdales70","$2y$10$GeFOdD3agFDabs0C/lH8eetNRA9EY0pHQTSKmf0e2qJgpa6f975d6","Ardales","Edmel","","","1998-05-05","09488561235","0","6","Doctor","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("71","LynnetteAperin71","$2y$10$ysuKMdzmHDxOg4Oi/WTa/eXALX8sAtRZSxhrCj4J8I230JuPw8Xl6","Aperin","Lynnette","","","1998-05-05","09488561235","1","6","Midwife","1","2023-03-18","0");
+INSERT INTO tbl_users VALUES("72","SamuelEsplana72","$2y$10$sNSaM3DnX3sZsfmhUhwDj.wRsFc9sgRO8Cc9oJ03S5XPdph0pmhWy","Esplana","Samuel","","","1998-05-05","09488561235","0","6","Office Staff","1","2023-03-18","0");
 INSERT INTO tbl_users VALUES("73","delacruzjsFD73","$2y$10$A3H06BTjwU1dTNZaGR12Mue7o3Zp.uc1TNat99CHoCqrHHH3OjKT.","De La Cruz","Juan","Santos","","1998-05-05","09488561235","0","5","Front Desk Staff","2","2023-03-19","0");
 INSERT INTO tbl_users VALUES("76","delacruzmsPNI76","$2y$10$sMxeysoVPmyPS.VmR8hnMOMZjRJA0YIMbPKeeEo1CAvBfRVGLYcWO","De La Cruz","Maria Clara","Santa Ana","","1987-05-02","09526132487","1","3","Midwife","2","2023-04-17","2");
 INSERT INTO tbl_users VALUES("78","OPDTest","$2y$10$PK9tpiVLemvbcvC5tIK7nOMf0maJnzgLYsjpTdaPhLj7onyGruj6e","Edit and View","OPD","","","2023-03-01","12345678910","0","1","OPD Staff","2","2023-04-19","0");
