@@ -40,6 +40,31 @@ class API
                                   'data' => $users,
                                   'method' => 'GET'
           ));
+      
+      } else if (isset($_GET['username'])) {
+
+        $this->db->where('username', $_GET['username']);
+        $user = $this->db->get('tbl_users');
+
+        if ($user === []) {
+          echo json_encode(array('status' => 'success',
+                                  'message' => 'Username available',
+                                  'method' => 'GET'
+          ));
+        } else {
+          if (intval($user[0]['user_id']) === intval($_GET['user_id'])) {
+            echo json_encode(array('status' => 'success',
+                                  'message' => 'Username available',
+                                  'method' => 'GET'
+          ));
+          } else {
+            echo json_encode(array('status' => 'fail',
+                                  'message' => 'Username already taken',
+                                  'method' => 'GET'
+          ));
+          }
+          
+        }
 
       } else if (isset($_GET['user_id'])) {
 
@@ -51,6 +76,8 @@ class API
                                   'data' => $user,
                                   'method' => 'GET'
           ));
+      
+      
 
       } else {
         $payload = (array) json_decode($_GET['payload']);
