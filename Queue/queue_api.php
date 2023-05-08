@@ -61,6 +61,23 @@ class API
                                     'method' => 'GET'
                                   ));
 
+      } else if (isset($_GET['patient_id'])) {
+
+        $this->db->where('patient_id', $_GET['patient_id']);
+        $check_queue = $this->db->get('tbl_queue');
+
+        if ($check_queue === []) {
+          echo json_encode(array('status' => 'success',
+                                    'message' => 'Patient not on queue yet',
+                                    'method' => 'GET'
+                                  ));
+        } else {
+          echo json_encode(array('status' => 'fail',
+                                    'message' => 'Patient is on queue',
+                                    'method' => 'GET'
+                                  ));
+        }
+
       } else {
         $this->db->where('department', 5);
         $this->db->orderBy('queue_number', 'asc');
