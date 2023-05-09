@@ -23,6 +23,58 @@ class API
 
       $payload = (array) json_decode($_GET['payload']);
       // print_r($payload);
+      $barangay_list = [
+        "Anoling",
+        "Baligang",
+        "Bantonan",
+        "Brgy. 1 (Pob)",
+        "Brgy.2 (Pob)",
+        "Brgy.3 (Pob)",
+        "Brgy.4 (Pob)",
+        "Brgy.5 (Pob)",
+        "Brgy.6 (Pob)",
+        "Brgy.7 (Pob)",
+        "Bariw",
+        "Binanderahan",
+        "Binitayan",
+        "Bongabong",
+        "Cabagñan",
+        "Cabraran Pequeño",
+        "Caguiba",
+        "Calabidongan",
+        "Comun",
+        "Cotmon",
+        "Del Rosario",
+        "Gapo",
+        "Gotob",
+        "Ilawod",
+        "Iluluan",
+        "Libod",
+        "Ligban",
+        "Mabunga",
+        "Magogon",
+        "Manawan",
+        "Maninila",
+        "Mina",
+        "Miti",
+        "Palanog",
+        "Panoypoy",
+        "Pariaan",
+        "Quinartilan",
+        "Quirangay",
+        "Quitinday",
+        "Salugan",
+        "Solong",
+        "Sua",
+        "Sumlang",
+        "Tagaytay",
+        "Tagoytoy",
+        "Taladong",
+        "Taloto",
+        "Taplacon",
+        "Tinago",
+        "Tumpa",
+      ];
 
       if (isset($payload['record_type'])) {
 
@@ -346,6 +398,18 @@ class API
                                     'data' => $patients,
                                     'method' => 'GET'
                                   ));
+
+      } else if (isset($payload['household_id'])) {
+        // print_r($payload); return;
+
+        $this->db->where('household_id', $payload['household_id']);
+
+        $address = $this->db->get('tbl_household');
+
+        echo json_encode(array('status' => 'success',
+                                    'data' => $address[0],
+                                    'method' => 'GET'
+                                  ));
       } else {
         //check if there are parameters
         if (isset($payload['search_by'])) {
@@ -403,17 +467,24 @@ class API
             $this->db->where('p.status', $filter['status'], 'IN');
           }
 
+          //Outside Camalig filter
+          
 
           //Barangays filter
           if ($filter['barangay']) {
-            $this->db->where('barangay', $filter['barangay'], 'IN');
+            $this->db->where('hh.barangay', $filter['barangay'], 'IN');
           }
+          if ($filter['outside_camalig'] === true) {
+            $this->db->orWhere('hh.barangay', $barangay_list, 'NOT IN');
+          }
+
+          
         }
 
         $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');
 
         $this->db->orderBy('first_name', 'ASC');
-        $patients = $this->db->get('tbl_patient_info p', null, 'patient_id, concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, barangay, address');
+        $patients = $this->db->get('tbl_patient_info p', null, 'patient_id, concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, hh.barangay, hh.province, hh.municipality, hh.address_line');
 
         if ($patients) {
           echo json_encode(array('status' => 'success',

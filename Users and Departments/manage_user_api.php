@@ -33,7 +33,7 @@ class API
       } else if (isset($_GET['id'])) {
           $this->db->where('user_id', $_GET['id']);
 
-          $users = $this->db->get('tbl_users', null, 'CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS user_name, user_id as id');
+          $users = $this->db->get('tbl_users', null, 'CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS user_name, user_id as id, department');
 
 
             echo json_encode(array('status' => 'success',
