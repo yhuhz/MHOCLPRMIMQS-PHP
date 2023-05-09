@@ -174,10 +174,11 @@ class API
       } else if (isset($payload['patient_id'])) {
         $this->db->join('tbl_pwd pw', 'pw.patient_id=p.patient_id', 'LEFT');
         $this->db->join('tbl_senior_citizen sc', 'sc.patient_id=p.patient_id', 'LEFT');
+        $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');
         $this->db->where('p.patient_id',$payload['patient_id']);
 
         $this->db->orderBy('first_name', 'ASC');
-        $patient = $this->db->get('tbl_patient_info p', null, 'p.patient_id, first_name, middle_name, last_name, suffix, household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, barangay, address, pw.pwd_id, pw.disability, sc.senior_citizen_id');
+        $patient = $this->db->get('tbl_patient_info p', null, 'p.patient_id, first_name, middle_name, last_name, suffix, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, hh.barangay, hh.address_line, hh.municipality, hh.province, pw.pwd_id, pw.disability, sc.senior_citizen_id');
 
         if ($patient != []) {
           echo json_encode(array('status' => 'success',
@@ -233,15 +234,23 @@ class API
 
           //Barangays filter
           if ($filter['barangay']) {
-            $this->db->where('barangay', $filter['barangay'], 'IN');
+            $this->db->where('hh.barangay', $filter['barangay'], 'IN');
+            if ($filter['outside_camalig'] === true) {
+              $this->db->orWhere('hh.barangay', $barangay_list, 'NOT IN');
+            }
+          } else {
+            if ($filter['outside_camalig'] === true) {
+              $this->db->where('hh.barangay', $barangay_list, 'NOT IN');
+            }
           }
+          
         }
 
         $this->db->join('tbl_patient_info p', 'p.patient_id=pw.patient_id', 'LEFT');
         $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');
 
         $this->db->orderBy('first_name', 'ASC');
-        $patients = $this->db->get('tbl_pwd pw', null, 'pw.patient_id, concat(first_name, " ", last_name, " ", coalesce(suffix, "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, pw.pwd_id, pw.disability, barangay, address');
+        $patients = $this->db->get('tbl_pwd pw', null, 'pw.patient_id, concat(first_name, " ", last_name, " ", coalesce(suffix, "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, pw.pwd_id, pw.disability, hh.address_line, hh.barangay, hh.municipality, hh.province, address');
 
         if ($patients) {
           echo json_encode(array('status' => 'success',
@@ -300,7 +309,14 @@ class API
 
           //Barangays filter
           if ($filter['barangay']) {
-            $this->db->where('barangay', $filter['barangay'], 'IN');
+            $this->db->where('hh.barangay', $filter['barangay'], 'IN');
+            if ($filter['outside_camalig'] === true) {
+              $this->db->orWhere('hh.barangay', $barangay_list, 'NOT IN');
+            }
+          } else {
+            if ($filter['outside_camalig'] === true) {
+              $this->db->where('hh.barangay', $barangay_list, 'NOT IN');
+            }
           }
         }
 
@@ -308,7 +324,7 @@ class API
         $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');
 
         $this->db->orderBy('first_name', 'ASC');
-        $patients = $this->db->get('tbl_senior_citizen sc', null, 'sc.patient_id, concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, sc.senior_citizen_id, barangay, address');
+        $patients = $this->db->get('tbl_senior_citizen sc', null, 'sc.patient_id, concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, sc.senior_citizen_id, hh.barangay, hh.address_line, hh.municipality, hh.province');
 
         if ($patients) {
           echo json_encode(array('status' => 'success',
