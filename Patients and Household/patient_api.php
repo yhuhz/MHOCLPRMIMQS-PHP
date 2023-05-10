@@ -378,13 +378,20 @@ class API
 
           //Barangays filter
           if ($filter['barangay']) {
-            $this->db->where('barangay', $filter['barangay'], 'IN');
+            $this->db->where('hh.barangay', $filter['barangay'], 'IN');
+            if ($filter['outside_camalig'] === true) {
+              $this->db->orWhere('hh.barangay', $barangay_list, 'NOT IN');
+            }
+          } else {
+            if ($filter['outside_camalig'] === true) {
+              $this->db->where('hh.barangay', $barangay_list, 'NOT IN');
+            }
           }
         }
 
         $this->db->join('tbl_patient_info p', 'p.patient_id=pn.patient_id', 'LEFT');
         $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');
-        $patients = $this->db->get('tbl_prenatal pn', null, 'pn.prenatal_id, pn.patient_id, concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, pn.status, barangay, address, previous_full_term, previous_premature, midwifes_notes, pn.date_added');
+        $patients = $this->db->get('tbl_prenatal pn', null, 'pn.prenatal_id, pn.patient_id, concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, pn.status, hh.barangay, hh.address_line, hh.municipality, hh.province, previous_full_term, previous_premature, midwifes_notes, pn.date_added');
 
         if ($patients) {
           echo json_encode(array('status' => 'success',
@@ -489,9 +496,13 @@ class API
           //Barangays filter
           if ($filter['barangay']) {
             $this->db->where('hh.barangay', $filter['barangay'], 'IN');
-          }
-          if ($filter['outside_camalig'] === true) {
-            $this->db->orWhere('hh.barangay', $barangay_list, 'NOT IN');
+            if ($filter['outside_camalig'] === true) {
+              $this->db->orWhere('hh.barangay', $barangay_list, 'NOT IN');
+            }
+          } else {
+            if ($filter['outside_camalig'] === true) {
+              $this->db->where('hh.barangay', $barangay_list, 'NOT IN');
+            }
           }
 
           
