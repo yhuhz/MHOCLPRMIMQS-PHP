@@ -43,7 +43,7 @@ class API
             $this->db->where('opd.status', 0 );
           }
 
-          $this->db->orderBy('checkup_date', 'ASC');
+          $this->db->orderBy('checkup_date', 'DESC');
           $record = $this->db->get('tbl_opd opd', null, 'opd_id as record_id, checkup_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //DENTAL
