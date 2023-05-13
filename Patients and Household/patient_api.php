@@ -550,11 +550,14 @@ class API
         if (isset($pwd['pwd_id'])) {
           $pwd['patient_id'] = $patient_info['patient_id'];
           $this->db->insert('tbl_pwd', $pwd);
+          $patient_info['pwd_id'] = $pwd['pwd_id'];
+          
         }
 
         if (isset($senior_citizen['senior_citizen_id'])) {
           $senior_citizen['patient_id'] = $patient_info['patient_id'];
           $this->db->insert('tbl_senior_citizen', $senior_citizen);
+          $patient_info['senior_citizen_id'] = $senior_citizen['senior_citizen_id'];
         }
 
         if ($patient) {
