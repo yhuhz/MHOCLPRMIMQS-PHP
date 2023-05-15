@@ -36,6 +36,9 @@ class API
           $this->db->where('opd_id', $opd_record['opd_id']);
           $opd_arrays['lab_results'] = $this->db->get('tbl_opd_lab_results', null, 'lab_result');
 
+          $this->db->where('opd_id', $opd_record['opd_id']);
+          $opd_arrays['prescription'] = $this->db->get('tbl_prescription', null, 'medicine_name, quantity');
+
           if (isset($opd_record['doctor_id'])) {
           $this->db->where('user_id',$opd_record['doctor_id']);
           $doctor_name = $this->db->get('tbl_users', null, 'CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS name');
@@ -91,6 +94,7 @@ class API
     public function httpPut($payload)
     {
       $payload = (array) $payload;
+      // print_r($payload); return;
 
       $payload['opd_id'] = $payload['record_id'];
       unset($payload['record_id']);
@@ -119,7 +123,7 @@ class API
 
       $lab_results_array = [];
       if (isset($payload['lab_results'])) {
-        //Remove existing disease records
+        //Remove existing lab result records
         $this->db->where('opd_id', $payload['opd_id']);
         $this->db->delete('tbl_opd_lab_results');
 
@@ -137,6 +141,26 @@ class API
 
       unset($payload['lab_results']);
 
+      $prescription_array = [];
+      if (isset($payload['prescription'])) {
+        //Remove existing prescription records
+        $this->db->where('opd_id', $payload['opd_id']);
+        $this->db->delete('tbl_prescription');
+
+        //Replace records
+        foreach ($payload['prescription'] as $prescription) {
+          $prescription = (array) $prescription;
+          $prescription['opd_id'] = $payload['opd_id'];
+          $prescription['prescription_id'] = $this->db->insert('tbl_prescription', $prescription);
+
+          if ($prescription['opd_id']) {
+            array_push($prescription_array, $prescription);
+          }
+        }
+      }
+
+      unset($payload['prescription']);
+
       $this->db->where('opd_id', $payload['opd_id']);
       $opd_record = $this->db->update('tbl_opd', $payload);
 
@@ -152,6 +176,7 @@ class API
         $opd_arrays = [];
         $opd_arrays['lab_results'] = $lab_results_array;
         $opd_arrays['disease'] = $disease_array;
+        $opd_arrays['prescription'] = $prescription_array;
 
         echo json_encode(array('status' => 'success',
                                 'record' => $payload,

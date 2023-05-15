@@ -37,6 +37,28 @@ class API
                                   'method' => 'GET'
                                 ));
 
+      } else if (isset($_GET['medicine_name'])) {
+
+        $this->db->where('generic_name', "%" . $_GET['medicine_name'] . "%", "LIKE");
+        $this->db->groupBy("brand_name");
+        $medicines = $this->db->get('tbl_medicine_inventory');
+
+        if ($medicines === []) {
+          $this->db->where('brand_name', "%" . $_GET['medicine_name'] . "%", "LIKE");
+          $this->db->groupBy("brand_name");
+          $medicines = $this->db->get('tbl_medicine_inventory');
+
+          echo json_encode(array('status' => 'success',
+                                  'data' => $medicines,
+                                  'method' => 'GET'
+                                ));
+        } else {
+          echo json_encode(array('status' => 'success',
+                                  'data' => $medicines,
+                                  'method' => 'GET'
+                                ));
+        }
+
       } else if (isset($_GET['release_filter'])) {
 
         //GET MEDICINE RELEASE

@@ -484,15 +484,11 @@ class API
             $this->db->where('sex', $filter['sex'], 'IN');
           }
 
-
           //Status filter
           if(isset($filter['status']) && isset($filter['status'][0])) {
             $this->db->where('p.status', $filter['status'], 'IN');
           }
-
-          //Outside Camalig filter
           
-
           //Barangays filter
           if ($filter['barangay']) {
             $this->db->where('hh.barangay', $filter['barangay'], 'IN');
