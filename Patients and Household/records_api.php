@@ -64,7 +64,7 @@ class API
             $this->db->where('d.status', 0 );
           }
 
-          $this->db->orderBy('checkup_date', 'ASC');
+          $this->db->orderBy('checkup_date', 'DESC');
           $record = $this->db->get('tbl_dental d', null, 'dental_id as record_id, checkup_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //PRENTAL
@@ -85,7 +85,7 @@ class API
             $this->db->where('pnl.status', 0 );
           }
 
-          $this->db->orderBy('pnl.date_added', 'ASC');
+          $this->db->orderBy('pnl.date_added', 'DESC');
           $record = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id as record_id, pnl.date_added as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //IMMUNIZATION
@@ -107,7 +107,7 @@ class API
             $this->db->where('i.status', 0 );
           }
 
-          $this->db->orderBy('immunization_date', 'ASC');
+          $this->db->orderBy('immunization_date', 'DESC');
           $record = $this->db->get('tbl_immunization i', null, 'immunization_id as record_id, immunization_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
         }
 
@@ -136,7 +136,7 @@ class API
 
           $this->db->where('opd.status', 0);
 
-          $this->db->orderBy('checkup_date', 'ASC');
+          $this->db->orderBy('checkup_date', 'DESC');
           $record = $this->db->get('tbl_opd opd', null, 'opd_id as record_id, checkup_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //DENTAL
@@ -155,7 +155,7 @@ class API
 
           $this->db->where('d.status', 0);
 
-          $this->db->orderBy('checkup_date', 'ASC');
+          $this->db->orderBy('checkup_date', 'DESC');
           $record = $this->db->get('tbl_dental d', null, 'dental_id as record_id, checkup_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //PRENTAL
@@ -175,7 +175,7 @@ class API
 
           $this->db->where('pnl.status', 0);
 
-          $this->db->orderBy('pnl.date_added', 'ASC');
+          $this->db->orderBy('pnl.date_added', 'DESC');
           $record = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id as record_id, pnl.date_added as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
         //IMMUNIZATION
@@ -194,7 +194,7 @@ class API
 
           $this->db->where('i.status', 0);
 
-          $this->db->orderBy('immunization_date', 'ASC');
+          $this->db->orderBy('immunization_date', 'DESC');
           $record = $this->db->get('tbl_immunization i', null, 'immunization_id as record_id, immunization_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
         }
 

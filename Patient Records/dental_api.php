@@ -21,9 +21,18 @@ class API
     public function httpGet()
     {
       $payload = (array) json_decode($_GET['payload']);
+
+      $dental_array = [];
+
       if (isset($payload['record_id'])) {
         $this->db->where('dental_id', $payload['record_id']);
+        $dental_array['prescription'] = $this->db->get('tbl_prescription', null, 'medicine_name, quantity');
+
+        $this->db->where('dental_id', $payload['record_id']);
+
+        
       }
+
       $this->db->where('status', 0);
       $dental_records = $this->db->get('tbl_dental');
       $dental_records = $dental_records[0];
@@ -33,14 +42,17 @@ class API
         $doctor_name = $this->db->get('tbl_users', null, 'CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS name');
         $dental_records['doctor_name'] = $doctor_name[0]['name'];
         }
-
+      
+      
       $this->db->where('patient_id', $dental_records['patient_id']);
-      $dental_chart = $this->db->get('tbl_dental_chart');
+      $dental_array['dental_chart'] = $this->db->get('tbl_dental_chart');
+
+      
 
 
         echo json_encode(array('status' => 'success',
                                   'record' => $dental_records,
-                                  'array' => $dental_chart,
+                                  'array' => $dental_array,
                                   'method' => 'GET'
                                 ));
 
@@ -94,6 +106,7 @@ class API
     {
       $payload = (array) $payload;
       // print_r($payload); return;
+
       $dental_record = (array) $payload['dental_record'];
       $dental_record['dental_id'] = $dental_record['record_id'];
       unset($dental_record['record_id']);
@@ -112,12 +125,35 @@ class API
           $this->db->update('tbl_dental_chart', $tooth);
         }
 
+        $dental_array = [];
+        $dental_array['dental_chart'] = $dental_chart;
+
+        $prescription_array = [];
+        if (isset($payload['prescription'])) {
+          //Remove existing prescription records
+          $this->db->where('dental_id', $dental_record['dental_id']);
+          $this->db->delete('tbl_prescription');
+
+          //Replace records
+          foreach ($payload['prescription'] as $prescription) {
+            $prescription = (array) $prescription;
+            $prescription['dental_id'] = $dental_record['dental_id'];
+            $prescription['prescription_id'] = $this->db->insert('tbl_prescription', $prescription);
+
+            if ($prescription['dental_id']) {
+              array_push($prescription_array, $prescription);
+            }
+          }
+        }
+
+        $dental_array['prescription'] = $prescription_array;
+
         $dental_record['record_id'] = $dental_record['dental_id'];
         unset($dental_record['dental_id']);
 
         echo json_encode(array('status' => 'success',
                                 'record' => $dental_record,
-                                'array' => $dental_chart,
+                                'array' => $dental_array,
                                 'method' => 'PUT'
                               ));
 
