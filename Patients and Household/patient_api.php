@@ -499,9 +499,7 @@ class API
             if ($filter['outside_camalig'] === true) {
               $this->db->where('hh.barangay', $barangay_list, 'NOT IN');
             }
-          }
-
-          
+          } 
         }
 
         $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');

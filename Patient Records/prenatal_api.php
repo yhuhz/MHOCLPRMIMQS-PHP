@@ -21,93 +21,129 @@ class API
     public function httpGet()
     {
       $payload = (array) json_decode($_GET['payload']);
-      if (isset($payload['record_id'])) {
-        $this->db->where('prenatal_id', $payload['record_id']);
+      if (isset($payload['prenatal_checkup_id'])) {
+        $this->db->where('prenatal_checkup_id', $payload['prenatal_checkup_id']);
+        $prenatal_checkup = $this->db->get('prenatal_checkup');
+      } else {
+        if (isset($payload['record_id'])) {
+          $this->db->where('prenatal_id', $payload['record_id']);
+        }
+        $this->db->where('pn.status', 0);
+  
+        $this->db->join('tbl_users u', 'u.user_id=pn.midwife_id', 'LEFT');
+        $prenatal_records = $this->db->get('tbl_prenatal pn', null, 'prenatal_id, midwife_id, patient_id, last_menstruation, previous_full_term, previous_premature, midwifes_notes, pn.date_added, CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS midwife_name');
+        $prenatal_checkup = [];
+  
+        foreach ($prenatal_records as $prenatal) {
+          $this->db->where('prenatal_id', $prenatal['prenatal_id']);
+          $this->db->where('status', 0);
+  
+          array_push($prenatal_checkup, $this->db->get('tbl_prenatal_checkup'));
+        }
+  
+        if ($prenatal_records) {
+          echo json_encode(array('status' => 'success',
+                                    'record' => $prenatal_records[0],
+                                    'array' => $prenatal_checkup[0],
+                                    'method' => 'GET'
+                                  ));
+        }
       }
-      $this->db->where('pn.status', 0);
-
-      $this->db->join('tbl_users u', 'u.user_id=pn.midwife_id', 'LEFT');
-      $prenatal_records = $this->db->get('tbl_prenatal pn', null, 'prenatal_id, midwife_id, patient_id, last_menstruation, previous_full_term, previous_premature, midwifes_notes, pn.date_added, CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS midwife_name');
-      $prenatal_checkup = [];
-
-      foreach ($prenatal_records as $prenatal) {
-        $this->db->where('prenatal_id', $prenatal['prenatal_id']);
-        $this->db->where('status', 0);
-
-        array_push($prenatal_checkup, $this->db->get('tbl_prenatal_checkup'));
-      }
-
-      if ($prenatal_records) {
-        echo json_encode(array('status' => 'success',
-                                  'record' => $prenatal_records[0],
-                                  'array' => $prenatal_checkup[0],
-                                  'method' => 'GET'
-                                ));
-      }
+      
 
     }
 
     public function httpPost($payload)
     {
-      $prenatal_record = (array) $payload;
+      $payload = (array) $payload;
 
-      $prenatal_record['prenatal_id'] = $this->db->insert('tbl_prenatal', $prenatal_record);
+      if (isset($payload['patient_id'])) {
+        $prenatal_record = $payload;
+        $prenatal_record['prenatal_id'] = $this->db->insert('tbl_prenatal', $prenatal_record);
 
-      if ($prenatal_record['prenatal_id']) {
+        if ($prenatal_record['prenatal_id']) {
 
-        $prenatal_record['record_id'] = $prenatal_record['prenatal_id'];
-        unset($prenatal_record['prenatal_id']);
+          $prenatal_record['record_id'] = $prenatal_record['prenatal_id'];
+          unset($prenatal_record['prenatal_id']);
 
-        $prenatal_record['date'] = $prenatal_record['date_added'];
-        unset($prenatal_record['date_added']);
+          $prenatal_record['date'] = $prenatal_record['date_added'];
+          unset($prenatal_record['date_added']);
 
-        echo json_encode(array('status' => 'success',
-                                  'data' => $prenatal_record,
-                                  'method' => 'POST'
-                                ));
-      } else {
-        echo json_encode(array('status' => 'fail',
-                                  'message' => 'Failed to add record',
-                                  'method' => 'POST'
-                                ));
-        return;
+          echo json_encode(array('status' => 'success',
+                                    'data' => $prenatal_record,
+                                    'method' => 'POST'
+                                  ));
+        } else {
+          echo json_encode(array('status' => 'fail',
+                                    'message' => 'Failed to add record',
+                                    'method' => 'POST'
+                                  ));
+        }
+      } else if (isset($payload['temperature'])) {
+        $prenatal_checkup = $payload;
+        $prenatal_checkup['prenatal_checkup_id'] = $this->db->insert('tbl_prenatal_checkup', $prenatal_checkup);
+
+
+        if ($prenatal_checkup['prenatal_checkup_id']) {
+
+          echo json_encode(array('status' => 'success',
+                                    'data' => $prenatal_checkup,
+                                    'method' => 'POST'
+                                  ));
+        } else {
+          echo json_encode(array('status' => 'fail',
+                                    'message' => 'Failed to add record',
+                                    'method' => 'POST'
+                                  ));
+        }
       }
+
+      
     }
 
     public function httpPut($payload)
     {
       $payload = (array) $payload;
-      $prenatal = (array) $payload['prenatal'];
-      $prenatal_checkup = (array) $payload['checkup'];
 
-      foreach ($prenatal_checkup as $checkup) {
-        $checkup = (array) $checkup;
+      if (isset($payload['prenatal'])) {
+        $prenatal = (array) $payload['prenatal'];
 
-        if (isset($checkup['prenatal_checkup_id'])) {
-          $this->db->where('prenatal_checkup_id', $checkup['prenatal_checkup_id']);
-          $this->db->update('tbl_prenatal_checkup', $checkup);
-        } else {
-          $this->db->insert('tbl_prenatal_checkup', $checkup);
+        $this->db->where('prenatal_id', $prenatal['prenatal_id']);
+        $prenatal_record = $this->db->update('tbl_prenatal', $prenatal);
+
+        if ($prenatal_record) {
+          $this->db->where('user_id', $prenatal['midwife_id']);
+          $name = $this->db->get('tbl_users', null, 'CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS name');
+          $prenatal['midwife_name'] = $name[0]['name'];
+          // print_r($prenatal); return;
+
+          $this->db->where('prenatal_id', $prenatal['prenatal_id']);
+          $prenatal_checkup = $this->db->get('tbl_prenatal_checkup');
+
+          echo json_encode(array('status' => 'success',
+                                'record' => $prenatal,
+                                'array' => $prenatal_checkup,
+                                'method' => 'PUT'
+                              ));
         }
+      } else if (isset($payload['checkup'])) {
+        $prenatal_checkup = (array) $payload['checkup'];
 
+        $this->db->where('prenatal_checkup_id', $prenatal_checkup['prenatal_checkup_id']);
+        $prenatal = $this->db->update('tbl_prenatal_checkup', $prenatal_checkup);
+
+        $record = [];
+        $array = [];
+
+        if ($prenatal) {
+          echo json_encode(array('status' => 'success',
+                                'record' => $record,
+                                'array' => $array,
+                                'method' => 'PUT'
+                              ));
+        }
       }
-
-      $this->db->where('prenatal_id', $prenatal['prenatal_id']);
-      $prenatal_record = $this->db->update('tbl_prenatal', $prenatal);
-
-      if ($prenatal_record) {
-        $this->db->where('user_id', $prenatal['midwife_id']);
-        $name = $this->db->get('tbl_users', null, 'CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS name');
-        $prenatal['midwife_name'] = $name[0]['name'];
-        // print_r($prenatal); return;
-
-
-        echo json_encode(array('status' => 'success',
-                              'record' => $prenatal,
-                              'array' => $prenatal_checkup,
-                              'method' => 'PUT'
-                            ));
-      }
+      
 
     }
 
