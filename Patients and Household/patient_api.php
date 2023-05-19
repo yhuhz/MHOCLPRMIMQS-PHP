@@ -255,7 +255,7 @@ class API
         $patient_array = [];
         if ($patients !== []) {
           foreach($patients as $patient) {
-            if ($filter['barangay'] && in_array($patient['barangay'], $filter['barangay'])) {
+            if ($filter['barangay'] && $patient['municipality'] === 'Camalig' && in_array($patient['barangay'], $filter['barangay'])) {
               array_push($patient_array, $patient);
             }
             if ($filter['outside_camalig'] === true && $patient['municipality'] !== 'Camalig') {
@@ -341,7 +341,7 @@ class API
         $patient_array = [];
         if ($patients !== []) {
           foreach($patients as $patient) {
-            if ($filter['barangay'] && in_array($patient['barangay'], $filter['barangay'])) {
+            if ($filter['barangay'] && $patient['municipality'] === 'Camalig' && in_array($patient['barangay'], $filter['barangay'])) {
               array_push($patient_array, $patient);
             }
             if ($filter['outside_camalig'] === true && $patient['municipality'] !== 'Camalig') {
@@ -536,7 +536,7 @@ class API
         $patient_array = [];
         if ($patients !== []) {
           foreach($patients as $patient) {
-            if ($filter['barangay'] && in_array($patient['barangay'], $filter['barangay'])) {
+            if ($filter['barangay'] && $patient['municipality'] === 'Camalig' && in_array($patient['barangay'], $filter['barangay'])) {
               array_push($patient_array, $patient);
             }
             if ($filter['outside_camalig'] === true && $patient['municipality'] !== 'Camalig') {
