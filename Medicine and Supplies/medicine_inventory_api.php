@@ -36,25 +36,70 @@ class API
                                   'data' => $medicine_details,
                                   'method' => 'GET'
                                 ));
-
+                  
+      //FIND MEDICINES FOR DROPDOWN
       } else if (isset($_GET['medicine_name'])) {
 
         $this->db->where('generic_name', "%" . $_GET['medicine_name'] . "%", "LIKE");
-        $this->db->groupBy("brand_name");
+        $this->db->where('status', 0);
+
+        if(isset($_GET['for_release'])) {
+          $this->db->orderBy('exp_date', 'asc');
+        } else {
+          $this->db->groupBy("brand_name");
+        }
+        
         $medicines = $this->db->get('tbl_medicine_inventory');
 
         if ($medicines === []) {
           $this->db->where('brand_name', "%" . $_GET['medicine_name'] . "%", "LIKE");
-          $this->db->groupBy("brand_name");
+          $this->db->where('status', 0);
+          
+          if(isset($_GET['for_release'])) {
+            $this->db->orderBy('exp_date', 'asc');
+          } else {
+            $this->db->groupBy("brand_name");
+          }
+          
           $medicines = $this->db->get('tbl_medicine_inventory');
 
-          echo json_encode(array('status' => 'success',
+          if ($medicines !== []) {
+            $medicine_array = [];
+
+            foreach($medicines as $medicine) {
+              $this->db->where('medicine_id', $medicine['medicine_id']);
+              $this->db->where('status', 0);
+              $medicine['quantity_released'] = $this->db->getValue('tbl_medicine_release', 'CAST(SUM(quantity) as int)');
+
+              array_push($medicine_array, $medicine);
+            }
+
+            echo json_encode(array('status' => 'success',
+                                    'data' => $medicine_array,
+                                    'method' => 'GET'
+                                  ));
+          } else {
+            echo json_encode(array('status' => 'success',
                                   'data' => $medicines,
                                   'method' => 'GET'
                                 ));
+          }
+
+          
         } else {
+
+          $medicine_array = [];
+
+          foreach($medicines as $medicine) {
+            $this->db->where('medicine_id', $medicine['medicine_id']);
+            $this->db->where('status', 0);
+            $medicine['quantity_released'] = $this->db->getValue('tbl_medicine_release', 'CAST(SUM(quantity) as int)');
+            
+            array_push($medicine_array, $medicine);
+          }
+
           echo json_encode(array('status' => 'success',
-                                  'data' => $medicines,
+                                  'data' => $medicine_array,
                                   'method' => 'GET'
                                 ));
         }
@@ -225,30 +270,65 @@ class API
       $payload = (array) $payload;
 
       if (isset($payload['department'])) {
-        //ADD MEDICINE RELEASE RECORD
-        $payload['med_release_id'] = $this->db->insert('tbl_medicine_release', $payload);
+        if (isset($payload['medicine_array'])) {
+          $medicine_array = (array) $payload['medicine_array'];
 
-        if ($payload['med_release_id']) {
+          $medicine_releases = [];
+          
+          foreach($medicine_array as $medicine) {
+            $medicine = (array) $medicine;
+            $medicine_details = (array) $medicine['medicine_details'];
+            // print_r($medicine_details); return;
 
-          if (isset($payload['patient_id'])) {
+            $toInsert = [];
+            $toInsert['patient_id'] = $payload['patient_id'];
+            $toInsert['doctor_id'] = $payload['doctor_id'];
+            $toInsert['department'] = $payload['department'];
+            $toInsert['medicine_id'] = $medicine_details[0];
+            $toInsert['quantity'] = $medicine['quantity'];
+            $toInsert['release_date'] = date("Y-m-d");
+            $toInsert['released_by'] = $payload['released_by'];
+            $toInsert['status'] = 0;
 
-            $this->db->where('patient_id', $payload['patient_id']);
-            $name = $this->db->get('tbl_patient_info', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
+            $toInsert['med_release_id'] = $this->db->insert('tbl_medicine_release', $toInsert);
 
-            $payload['patient_name'] = $name[0]['name'];
-          } else {
-            $this->db->where('user_id', $payload['doctor_id']);
-            $name = $this->db->get('tbl_users', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
-
-            $payload['doctor_name'] = $name[0]['name'];
+            if ($toInsert['med_release_id']) {
+              array_push($medicine_releases, $toInsert);
+            }
           }
 
           echo json_encode(array('status' => 'success',
-                                    'data' => $payload,
-                                    'method' => 'POST'
-                                  ));
-        }
+                                      'data' => $medicine_releases,
+                                      'method' => 'POST'
+                                    ));
 
+        } else {
+          //ADD MEDICINE RELEASE RECORD
+          $payload['med_release_id'] = $this->db->insert('tbl_medicine_release', $payload);
+
+          if ($payload['med_release_id']) {
+
+            if (isset($payload['patient_id'])) {
+
+              $this->db->where('patient_id', $payload['patient_id']);
+              $name = $this->db->get('tbl_patient_info', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
+
+              $payload['patient_name'] = $name[0]['name'];
+            } else {
+              $this->db->where('user_id', $payload['doctor_id']);
+              $name = $this->db->get('tbl_users', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
+
+              $payload['doctor_name'] = $name[0]['name'];
+            }
+
+            echo json_encode(array('status' => 'success',
+                                      'data' => $payload,
+                                      'method' => 'POST'
+                                    ));
+          }
+
+        }
+        
       } else {
         //ADD MEDICINE RECORD
         $payload['medicine_id'] = $this->db->insert('tbl_medicine_inventory', $payload);
