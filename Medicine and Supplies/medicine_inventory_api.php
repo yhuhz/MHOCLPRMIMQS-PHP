@@ -174,6 +174,7 @@ class API
                                     'data' => $medicine_release_array,
                                     'method' => 'GET'
                                   ));
+
       } else {
         //GET MEDICINE INVENTORY
         $payload = (array) json_decode($_GET['payload']);

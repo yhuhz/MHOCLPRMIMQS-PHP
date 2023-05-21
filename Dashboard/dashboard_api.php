@@ -46,8 +46,6 @@ class API
         $date_array = [date('Y-01-01'), date('Y-12-31')];
       }
 
-      $data_array = [];
-
       //PATIENTS
       //Get Patient count
       $this->db->where('status', [0, 1], 'BETWEEN');
