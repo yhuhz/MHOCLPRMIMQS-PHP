@@ -111,12 +111,12 @@ class API
           $record = $this->db->get('tbl_immunization i', null, 'immunization_id as record_id, immunization_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
         }
 
-        if ($record != []) {
+        
           echo json_encode(array('status' => 'success',
                                     'data' => $record,
                                     'method' => 'GET'
                                   ));
-        }
+        
 
       } else if (isset($payload['department'])) {
 
