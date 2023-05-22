@@ -283,7 +283,11 @@ class API
 
             $toInsert = [];
             $toInsert['patient_id'] = $payload['patient_id'];
-            $toInsert['doctor_id'] = $payload['doctor_id'];
+
+            if (isset($payload['doctor_id'])) {
+              $toInsert['doctor_id'] = $payload['doctor_id'];
+            }
+            
             $toInsert['department'] = $payload['department'];
             $toInsert['medicine_id'] = $medicine_details[0];
             $toInsert['quantity'] = $medicine['quantity'];

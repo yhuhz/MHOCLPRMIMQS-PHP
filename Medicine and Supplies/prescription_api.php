@@ -55,10 +55,16 @@ class API
         $this->db->where('opd.status', 0);
         $this->db->where('checkup_date', $date_array, 'BETWEEN');
 
-        $opd = $this->db->get('tbl_opd opd', null, 'opd_id, opd.patient_id, first_name, middle_name, last_name, suffix');
+        $opd = $this->db->get('tbl_opd opd', null, 'opd_id, opd.patient_id, checkup_date, first_name, middle_name, last_name, suffix');
 
         foreach($opd as $opd_record) {
-            $this->db->where('status', 0);
+            $opd_record['department'] = 1;
+            if ($payload['mode'] === 'pending') {
+                $this->db->where('status', 0);
+            } else {
+                $this->db->where('status', 1);
+            }
+            
             $this->db->where('opd_id', $opd_record['opd_id']);
             $opd_record['prescription'] = $this->db->get('tbl_prescription');
             if ($opd_record['prescription'] !== []) {
@@ -71,10 +77,15 @@ class API
         $this->db->where('d.status', 0);
         $this->db->where('checkup_date', $date_array, 'BETWEEN');
 
-        $dental = $this->db->get('tbl_dental d', null, 'dental_id, d.patient_id, first_name, middle_name, last_name, suffix');
+        $dental = $this->db->get('tbl_dental d', null, 'dental_id, d.patient_id, checkup_date, first_name, middle_name, last_name, suffix');
 
         foreach($dental as $dental_record) {
-            $this->db->where('status', 0);
+            $dental_record['department'] = 2;
+            if ($payload['mode'] === 'pending') {
+                $this->db->where('status', 0);
+            } else {
+                $this->db->where('status', 1);
+            }
             $this->db->where('dental_id', $dental_record['dental_id']);
             $dental_record['prescription'] = $this->db->get('tbl_prescription');
             if ($dental_record['prescription'] !== []) {
@@ -92,17 +103,22 @@ class API
             $this->db->where('status', 0);
             $this->db->where('prenatal_id', $prenatal_record['prenatal_id']);
             $this->db->where('checkup_date', $date_array, 'BETWEEN');
-            $checkup = $this->db->get('tbl_prenatal_checkup', null, 'prenatal_checkup_id');
+            $checkup = $this->db->get('tbl_prenatal_checkup', null, 'prenatal_checkup_id, checkup_date');
 
             if ($checkup !== []) {
                 foreach($checkup as $item) {
+                    $item['department'] = 3;
                     $item['patient_id'] = $prenatal_record['patient_id'];
                     $item['first_name'] = $prenatal_record['first_name'];
                     $item['middle_name'] = $prenatal_record['middle_name'];
                     $item['last_name'] = $prenatal_record['last_name'];
                     $item['suffix'] = $prenatal_record['suffix'];
 
-                    $this->db->where('status', 0);
+                    if ($payload['mode'] === 'pending') {
+                        $this->db->where('status', 0);
+                    } else {
+                        $this->db->where('status', 1);
+                    }
                     $this->db->where('prenatal_checkup_id', $item['prenatal_checkup_id']);
                     $item['prescription'] = $this->db->get('tbl_prescription');
                     if ($item['prescription'] !== []) {
@@ -111,6 +127,34 @@ class API
                 }
                 
             }
+        }
+
+        if ($payload['mode'] === 'done') {
+            $records_array = [];
+            foreach($records_list as $record) {
+                $this->db->where('mr.status', 0);
+                $this->db->where('patient_id', $record['patient_id']);
+                $this->db->where('release_date', $record['checkup_date']);
+
+                $this->db->join('tbl_medicine_inventory mi', 'mi.medicine_id=mr.medicine_id', 'LEFT');
+                $medicines = $this->db->get('tbl_medicine_release mr', null, 'med_release_id, mr.medicine_id, generic_name, brand_name, mr.quantity');
+
+                $medicine_array = [];
+                foreach($medicines as $medicine) {
+                    $meds = [];
+                    $meds['med_release_id'] = $medicine['med_release_id'];
+                    $meds['medicine_details'] = array('medicine_id' => $medicine['medicine_id'], 'medicine_name' => $medicine['generic_name'] . " - ". $medicine['brand_name']);
+                    $meds['quantity'] = $medicine['quantity'];
+
+                    array_push($medicine_array, $meds);
+                }
+
+                $record['medicines'] = $medicine_array;
+
+                array_push($records_array, $record);
+            }
+
+            $records_list = $records_array;
         }
 
         echo json_encode(array('status' => 'success',
@@ -128,7 +172,18 @@ class API
 
     public function httpPut($payload)
     {
-    
+        $payload = (array) $payload;
+
+        foreach ($payload as $prescription) {
+            $prescription = (array) $prescription;
+            $this->db->where('prescription_id', $prescription['prescription_id']);
+            $this->db->update('tbl_prescription', array('status' => 1));
+        }
+
+        echo json_encode(array('status' => 'success',
+                                  'data' => $payload,
+                                  'method' => 'PUT'
+                                ));
     }
 
     public function httpDelete($payload)
