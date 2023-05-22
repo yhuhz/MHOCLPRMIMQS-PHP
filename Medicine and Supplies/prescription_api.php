@@ -20,7 +20,7 @@ class API
 
     public function httpGet($payload)
     {
-        if (isset($_GET['pending'])) {
+        
         $payload = (array) json_decode($_GET['payload']);
         $date_array = [];
 
@@ -55,7 +55,7 @@ class API
         $this->db->where('opd.status', 0);
         $this->db->where('checkup_date', $date_array, 'BETWEEN');
 
-        $opd = $this->db->get('tbl_opd opd', null, 'opd_id, first_name, middle_name, last_name, suffix');
+        $opd = $this->db->get('tbl_opd opd', null, 'opd_id, opd.patient_id, first_name, middle_name, last_name, suffix');
 
         foreach($opd as $opd_record) {
             $this->db->where('status', 0);
@@ -71,7 +71,7 @@ class API
         $this->db->where('d.status', 0);
         $this->db->where('checkup_date', $date_array, 'BETWEEN');
 
-        $dental = $this->db->get('tbl_dental d', null, 'dental_id, first_name, middle_name, last_name, suffix');
+        $dental = $this->db->get('tbl_dental d', null, 'dental_id, d.patient_id, first_name, middle_name, last_name, suffix');
 
         foreach($dental as $dental_record) {
             $this->db->where('status', 0);
@@ -86,7 +86,7 @@ class API
         $this->db->join('tbl_patient_info p', 'p.patient_id=pnl.patient_id', 'LEFT');
         $this->db->where('pnl.status', 0);
 
-        $prenatal = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id, first_name, middle_name, last_name, suffix');
+        $prenatal = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id, pnl.patient_id, first_name, middle_name, last_name, suffix');
 
         foreach($prenatal as $prenatal_record) {
             $this->db->where('status', 0);
@@ -96,6 +96,7 @@ class API
 
             if ($checkup !== []) {
                 foreach($checkup as $item) {
+                    $item['patient_id'] = $prenatal_record['patient_id'];
                     $item['first_name'] = $prenatal_record['first_name'];
                     $item['middle_name'] = $prenatal_record['middle_name'];
                     $item['last_name'] = $prenatal_record['last_name'];
@@ -117,7 +118,7 @@ class API
                                   'method' => 'GET'
                                 ));
 
-      }
+      
     }
 
     public function httpPost($payload)
