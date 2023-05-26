@@ -69,6 +69,7 @@ class API
                 $this->db->where('opd_id', $opd_record['opd_id']);
                 $opd_record['prescription'] = $this->db->get('tbl_prescription');
                 if ($opd_record['prescription'] !== []) {
+                    $opd_record['medicines'] = [];
                     array_push($records_list, $opd_record);
                 }
             }
@@ -90,6 +91,7 @@ class API
                 $this->db->where('dental_id', $dental_record['dental_id']);
                 $dental_record['prescription'] = $this->db->get('tbl_prescription');
                 if ($dental_record['prescription'] !== []) {
+                    $dental_record['medicines'] = [];
                     array_push($records_list, $dental_record);
                 }
             }
@@ -123,6 +125,7 @@ class API
                         $this->db->where('prenatal_checkup_id', $item['prenatal_checkup_id']);
                         $item['prescription'] = $this->db->get('tbl_prescription');
                         if ($item['prescription'] !== []) {
+                            $item['medicines'] = [];
                             array_push($records_list, $item);
                 }
                     }
