@@ -158,7 +158,7 @@ class API
                 $records_list = $records_array;
             }
         } else if ($payload['mode'] === 'done') {
-            
+
             $records_list = [];
             //Get patient ID
             $this->db->where('patient_id', NULL, 'IS NOT');

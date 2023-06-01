@@ -37,6 +37,47 @@ class API
                                   'method' => 'GET'
                                 ));
 
+       //FIND SUPPLY FOR DROPDOWN
+      } else if (isset($_GET['supply_name'])) {
+
+        $this->db->where('supply_name', "%" . $_GET['supply_name'] . "%", "LIKE");
+        $this->db->where('status', 0);
+
+        $this->db->groupBy("supply_name");
+        $supplies = $this->db->get('tbl_supplies_inventory');
+
+        if ($supplies === []) {
+          $this->db->where('supply_type', "%" . $_GET['supply_name'] . "%", "LIKE");
+          $this->db->where('status', 0);
+          
+          $this->db->groupBy("supply_type");
+          $supplies = $this->db->get('tbl_supplies_inventory');
+        }
+
+          if ($supplies !== []) {
+            $supply_array = [];
+
+            foreach($supplies as $supply) {
+              $this->db->where('supply_id', $supply['supply_id']);
+              $this->db->where('status', 0);
+              $supply['quantity_released'] = $this->db->getValue('tbl_supply_release', 'CAST(SUM(quantity) as int)');
+
+              array_push($supply_array, $supply);
+            }
+
+            echo json_encode(array('status' => 'success',
+                                    'data' => $supply_array,
+                                    'method' => 'GET'
+                                  ));
+          } else {
+            echo json_encode(array('status' => 'success',
+                                  'data' => $supplies,
+                                  'method' => 'GET'
+                                ));
+          }
+        
+
+
       } else if (isset($_GET['release_filter'])) {
         $release_filter = (array) json_decode($_GET['release_filter']);
 
@@ -162,23 +203,48 @@ class API
       $payload = (array) $payload;
 
       if (isset($payload['department'])) {
-        //ADD SUPPLY RELEASE RECORD
-        $payload['supply_release_id'] = $this->db->insert('tbl_supply_release', $payload);
+        if (isset($payload['supplies_array'])) {
+          // print_r($payload); return;
 
-        if ($payload['supply_release_id']) {
+          //ADD SUPPLY RELEASE RECORD
+          $supplies = [];
+          foreach($payload['supplies_array'] as $supply) {
+            $supply = (array) $supply;
+            $supply['release_date'] = date("Y-m-d");
+            $supply['released_by'] = $payload['released_by'];
+            $supply['user_id'] = $payload['user_id'];
+            $supply['department'] = $payload['department'];
+            $supply['supply_release_id'] = $this->db->insert('tbl_supply_release', $supply);
 
-
-            $this->db->where('user_id', $payload['user_id']);
-            $name = $this->db->get('tbl_users', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
-
-            $payload['user_name'] = $name[0]['name'];
-
+            array_push($supplies, $supply);
+          }
+          
 
           echo json_encode(array('status' => 'success',
-                                    'data' => $payload,
-                                    'method' => 'POST'
-                                  ));
+                                      'data' => $supplies,
+                                      'method' => 'POST'
+                                    ));
+
+        } else {
+          //ADD SUPPLY RELEASE RECORD
+          $payload['supply_release_id'] = $this->db->insert('tbl_supply_release', $payload);
+
+          if ($payload['supply_release_id']) {
+
+
+              $this->db->where('user_id', $payload['user_id']);
+              $name = $this->db->get('tbl_users', null, 'concat(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) as name');
+
+              $payload['user_name'] = $name[0]['name'];
+
+
+            echo json_encode(array('status' => 'success',
+                                      'data' => $payload,
+                                      'method' => 'POST'
+                                    ));
+          }
         }
+        
 
       } else {
         //ADD SUPPLY RECORD
@@ -251,7 +317,7 @@ class API
 
         if ($delete_supply) {
             echo json_encode(array('status' => 'success',
-                                'message' => 'Medicine record successfully removed',
+                                'message' => 'Supply record successfully removed',
                                 'method' => 'DELETE'
           ));
         } else {
