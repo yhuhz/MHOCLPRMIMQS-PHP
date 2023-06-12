@@ -282,16 +282,22 @@ class API
             // print_r($medicine_details); return;
 
             $toInsert = [];
-            $toInsert['patient_id'] = $payload['patient_id'];
 
             if (isset($payload['doctor_id'])) {
               $toInsert['doctor_id'] = $payload['doctor_id'];
+            } else {
+              $toInsert['patient_id'] = $payload['patient_id'];
             }
             
             $toInsert['department'] = $payload['department'];
             $toInsert['medicine_id'] = $medicine_details[0];
             $toInsert['quantity'] = $medicine['quantity'];
-            $toInsert['release_date'] = date("Y-m-d");
+            if (isset($payload['release_date'])) {
+              $toInsert['release_date'] = $payload['release_date'];
+            } else {
+              $toInsert['release_date'] = date("Y-m-d");
+            }
+            
             $toInsert['released_by'] = $payload['released_by'];
             $toInsert['status'] = 0;
 
@@ -308,7 +314,6 @@ class API
                                     ));
 
         } else {
-          //ADD MEDICINE RELEASE RECORD
           $payload['med_release_id'] = $this->db->insert('tbl_medicine_release', $payload);
 
           if ($payload['med_release_id']) {
@@ -356,7 +361,9 @@ class API
     {
       $payload = (array) $payload;
 
-      if(isset($payload['department'])) {
+      if (isset($payload['medicine_array'])) {
+
+      } else if(isset($payload['department'])) {
         //EDIT MEDICINE RELEASE RECORD
         $this->db->where('med_release_id', $payload['med_release_id']);
         $medicine_release = $this->db->update('tbl_medicine_release', $payload);

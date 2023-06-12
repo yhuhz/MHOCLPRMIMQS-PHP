@@ -250,7 +250,7 @@ class API
         $this->db->join('tbl_household hh', 'hh.household_id=p.household_id', 'LEFT');
 
         $this->db->orderBy('first_name', 'ASC');
-        $patients = $this->db->get('tbl_pwd pw', null, 'pw.patient_id, concat(first_name, " ", last_name, " ", coalesce(suffix, "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, pw.pwd_id, pw.disability, hh.address_line, hh.barangay, hh.municipality, hh.province, address');
+        $patients = $this->db->get('tbl_pwd pw', null, 'pw.patient_id, concat(first_name, " ", last_name, " ", coalesce(suffix, "")) as name, first_name, middle_name, last_name, suffix, hh.household_name, p.household_id, sex, birthdate, FLOOR(DATEDIFF(CURRENT_DATE, birthdate)/365) as age, phone_number, p.status, pw.pwd_id, pw.disability, hh.address_line, hh.barangay, hh.municipality, hh.province');
 
         $patient_array = [];
         if ($patients !== []) {

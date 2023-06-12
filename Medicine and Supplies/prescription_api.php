@@ -133,36 +133,18 @@ class API
                 }
             }
 
-            if ($payload['mode'] === 'done') {
-                $records_array = [];
-                foreach($records_list as $record) {
-                    $this->db->where('mr.status', 0);
-                    $this->db->where('patient_id', $record['patient_id']);
-                    $this->db->where('release_date', $record['checkup_date']);
-
-                    $this->db->join('tbl_medicine_inventory mi', 'mi.medicine_id=mr.medicine_id', 'LEFT');
-                    $medicines = $this->db->get('tbl_medicine_release mr', null, 'med_release_id, mr.medicine_id, generic_name, brand_name, mr.quantity');
-
-                    $medicine_array = [];
-                    foreach($medicines as $medicine) {
-                        $meds = [];
-                        $meds['med_release_id'] = $medicine['med_release_id'];
-                        $meds['medicine_details'] = array('medicine_id' => $medicine['medicine_id'], 'medicine_name' => $medicine['generic_name'] . " - ". $medicine['brand_name']);
-                        $meds['quantity'] = $medicine['quantity'];
-
-                        array_push($medicine_array, $meds);
-                    }
-
-                    $record['medicines'] = $medicine_array;
-
-                    array_push($records_array, $record);
-                }
-
-                $records_list = $records_array;
-            }
         } else if ($payload['mode'] === 'done') {
 
             $records_list = [];
+            $departments = [
+                "Outpatient Department",
+                "Dental",
+                "Prenatal",
+                "Immunization",
+                "Front Pharmacy",
+                "Front Desk",
+                "Admin Office",
+              ];
             //Get patient ID
             $this->db->where('patient_id', NULL, 'IS NOT');
             $this->db->where('status', 0);
@@ -184,7 +166,7 @@ class API
                 $this->db->where('patient_id', $patient['patient_id']);
                 $this->db->where('release_date', $date_array, 'BETWEEN');
                 $this->db->join('tbl_medicine_inventory mi', 'mi.medicine_id=mr.medicine_id', 'LEFT');
-                    $medicines = $this->db->get('tbl_medicine_release mr', null, 'med_release_id, mr.medicine_id, generic_name, brand_name, mr.quantity, release_date');
+                $medicines = $this->db->get('tbl_medicine_release mr', null, 'med_release_id, mr.medicine_id, generic_name, brand_name, mr.quantity, release_date, department');
                 // print_r($medicines); return;
 
                 $medicine_array = [];
@@ -193,6 +175,7 @@ class API
                     $meds['med_release_id'] = $medicine['med_release_id'];
                     $meds['medicine_details'] = array('medicine_id' => $medicine['medicine_id'], 'medicine_name' => $medicine['generic_name'] . " - ". $medicine['brand_name']);
                     $meds['quantity'] = $medicine['quantity'];
+                    $meds['department'] = array("department_label" => $departments[$medicine['department'] - 1], "department_id" => $medicine['department'] - 1);
                     $meds['release_date'] = $medicine['release_date'];
 
                     array_push($medicine_array, $meds);
@@ -273,39 +256,48 @@ class API
             $doctors = $this->db->get('tbl_medicine_release', null, 'doctor_id');
 
             foreach($doctors as $doctor) {
+                // print_r($doctor); return;
                 $this->db->where('user_id', $doctor['doctor_id']);
                 $this->db->where('status', 0);
-                $details = $this->db->get('tbl_users', null, 'first_name, middle_name, last_name, suffix');
+                $details = $this->db->get('tbl_users', null, 'first_name, middle_name, last_name, suffix, department');
+                // print_r($details); return;
 
-                $doctor['first_name'] = $details[0]['first_name'];
-                $doctor['middle_name'] = $details[0]['middle_name'];
-                $doctor['last_name'] = $details[0]['last_name'];
-                $doctor['suffix'] = $details[0]['suffix'];
+                if ($details !== []) {
+                    $doctor['first_name'] = $details[0]['first_name'];
+                    $doctor['middle_name'] = $details[0]['middle_name'];
+                    $doctor['last_name'] = $details[0]['last_name'];
+                    $doctor['suffix'] = $details[0]['suffix'];
 
-                $this->db->where('doctor_id', $doctor['doctor_id']);
-                $this->db->where('release_date', $date_array, 'BETWEEN');
-                $this->db->join('tbl_medicine_inventory mi', 'mi.medicine_id=mr.medicine_id', 'LEFT');
-                    $medicines = $this->db->get('tbl_medicine_release mr', null, 'med_release_id, mr.medicine_id, generic_name, brand_name, mr.quantity, release_date');
-                // print_r($medicines); return;
+                    $this->db->where('doctor_id', $doctor['doctor_id']);
+                    $this->db->where('release_date', $date_array, 'BETWEEN');
+                    $this->db->join('tbl_medicine_inventory mi', 'mi.medicine_id=mr.medicine_id', 'LEFT');
+                    $medicines = $this->db->get('tbl_medicine_release mr', null, 'med_release_id, mr.medicine_id, generic_name, brand_name, mr.quantity, release_date, mr.department');
+                    // print_r($medicines); return;
 
-                $medicine_array = [];
-                foreach($medicines as $medicine) {
-                    $meds = [];
-                    $meds['med_release_id'] = $medicine['med_release_id'];
-                    $meds['medicine_details'] = array('medicine_id' => $medicine['medicine_id'], 'medicine_name' => $medicine['generic_name'] . " - ". $medicine['brand_name']);
-                    $meds['quantity'] = $medicine['quantity'];
-                    $meds['release_date'] = $medicine['release_date'];
+                    $medicine_array = [];
+                    foreach($medicines as $medicine) {
+                        $meds = [];
+                        $meds['med_release_id'] = $medicine['med_release_id'];
+                        $meds['medicine_details'] = array('medicine_id' => $medicine['medicine_id'], 'medicine_name' => $medicine['generic_name'] . " - ". $medicine['brand_name']);
+                        $meds['quantity'] = $medicine['quantity'];
+                        $meds['department'] = array("department_label" => $departments[$medicine['department'] - 1], "department_id" => $medicine['department'] - 1);
+                        $meds['release_date'] = $medicine['release_date'];
 
-                    array_push($medicine_array, $meds);
+                        array_push($medicine_array, $meds);
+                    }
+                    
+                    $doctor['prescription'] = [];
+                    $doctor['medicines'] = $medicine_array;
+                    array_push($records_list, $doctor);
                 }
+
                 
-                $doctor['prescription'] = [];
-                $doctor['medicines'] = $medicine_array;
-                array_push($records_list, $doctor);
             }
         }
 
-        
+        usort($records_list, function($a, $b) {
+            return strcmp($a['first_name'], $b['first_name']);
+        });
 
         echo json_encode(array('status' => 'success',
                                   'data' => $records_list,
