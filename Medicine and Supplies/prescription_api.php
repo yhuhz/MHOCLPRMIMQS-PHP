@@ -139,8 +139,7 @@ class API
             $departments = [
                 "Outpatient Department",
                 "Dental",
-                "Prenatal",
-                "Immunization",
+                "Prenatal and Immunization",
                 "Front Pharmacy",
                 "Front Desk",
                 "Admin Office",

@@ -360,8 +360,77 @@ class API
     public function httpPut($payload)
     {
       $payload = (array) $payload;
+      // print_r($payload); return;
 
       if (isset($payload['medicine_array'])) {
+
+        $date_array = [];
+
+        if ($payload['date'] === 'Today') {
+            $date_array = [date("Y-m-d"), date("Y-m-d")];
+
+        } else if ($payload['date']  === 'This Week') {
+            $today = new DateTime();
+            $week_start = clone $today;
+            $week_start->modify('last Sunday');
+            $week_end = clone $week_start;
+            $week_end->modify('+6 days');
+
+            $today = date_format($today, "Y-m-d");
+            $week_start = date_format($week_start, "Y-m-d");
+            $week_end = date_format($week_end, "Y-m-d");
+
+            $date_array = [$week_start, $week_end];
+            // print_r($date_array); return;
+
+        } else if ($payload['date'] === 'This Month') {
+            $date_array = [date('Y-m-01'), date('Y-m-t')];
+        } else if ($payload['date'] === 'This Year') {
+            $date_array = [date('Y-01-01'), date('Y-12-31')];
+        } else {
+            $date_array = $payload['date'];
+        }
+        
+        // EDIT MEDICINE RELEASE (MASS)
+        if (isset($payload['doctor_id'])) {
+          $this->db->where('doctor_id', $payload['doctor_id']);
+        } else if (isset($payload['patient_id'])) {
+          $this->db->where('patient_id', $payload['patient_id']);
+        }
+
+        $this->db->where('release_date', $date_array, 'BETWEEN');
+
+        $this->db->delete('tbl_medicine_release');
+        $release_array = [];
+
+        foreach($payload['medicine_array'] as $medicine) {
+          $medicine = (array) $medicine;
+          $to_insert = [];
+
+          if (isset($payload['doctor_id'])) {
+            $to_insert['doctor_id'] = $payload['doctor_id'];
+          } else if (isset($payload['patient_id'])) {
+            $to_insert['patient_id'] = $payload['patient_id'];
+          }
+
+          $department = (array) $medicine['department'];
+          $to_insert['department'] = $department['department_id'] + 1;
+
+          $medicine_details = (array) $medicine['medicine_details'];
+          $to_insert['medicine_id'] = $medicine_details['medicine_id'];
+          $to_insert['quantity'] = $medicine['quantity'];
+          $to_insert['released_by'] = $payload['released_by'];
+          $to_insert['release_date'] = $medicine['release_date'];
+
+          $medicine['med_release_id'] = $this->db->insert('tbl_medicine_release', $to_insert);
+
+          array_push($release_array, $medicine);
+        }
+
+        echo json_encode(array('status' => 'success',
+                                  'data' => $release_array,
+                                  'method' => 'PUT'
+                                ));
 
       } else if(isset($payload['department'])) {
         //EDIT MEDICINE RELEASE RECORD
