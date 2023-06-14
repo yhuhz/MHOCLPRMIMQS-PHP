@@ -37,6 +37,77 @@ class API
                                   'method' => 'GET'
                                 ));
 
+       //GET ALL SUPPLY RELEASE
+      } else if (isset($_GET['date'])) {
+
+        $date_array = [];
+
+        
+          if ($_GET['date'] === 'Today') {
+            $date_array = [date("Y-m-d"), date("Y-m-d")];
+  
+          } else if ($_GET['date']  === 'This Week') {
+              $today = new DateTime();
+              $week_start = clone $today;
+              $week_start->modify('last Sunday');
+              $week_end = clone $week_start;
+              $week_end->modify('+6 days');
+  
+              $today = date_format($today, "Y-m-d");
+              $week_start = date_format($week_start, "Y-m-d");
+              $week_end = date_format($week_end, "Y-m-d");
+  
+              $date_array = [$week_start, $week_end];
+              // print_r($date_array); return;
+  
+          } else if ($_GET['date'] === 'This Month') {
+              $date_array = [date('Y-m-01'), date('Y-m-t')];
+          } else if ($_GET['date'] === 'This Year') {
+              $date_array = [date('Y-01-01'), date('Y-12-31')];
+          } else {
+              $date_array = $_GET['date'];
+          }
+        
+
+        $this->db->join('tbl_users u', 'u.user_id=sr.user_id', 'LEFT');
+        $this->db->where('release_date', $date_array, 'BETWEEN');
+        $this->db->groupBy('u.first_name');
+        $this->db->orderBy('u.first_name', 'ASC');
+        $users = $this->db->get('tbl_supply_release sr', null, 'sr.user_id, sr.department, u.first_name, u.last_name, u.middle_name, u.suffix');
+
+        $supply_release = [];
+
+        foreach ($users as $user) {
+          $this->db->join('tbl_supplies_inventory si', 'si.supply_id=sr.supply_id', 'LEFT');
+          $this->db->where('user_id', $user['user_id']);
+          $this->db->where('release_date', $date_array, 'BETWEEN');
+          $this->db->where('sr.status', 0);
+          $supplies = $this->db->get('tbl_supply_release sr', null, 'sr.supply_release_id, sr.supply_id, si.supply_name, sr.quantity, sr.release_date, sr.released_by, sr.status');
+
+          $supplies_array = [];
+
+          if ($supplies !== []) {
+            foreach ($supplies as $supply) {
+              $supply['supply_details'] = array("supply_id" => $supply['supply_id'], "supply_name" => $supply['supply_name']);
+              unset($supply['supply_id']);
+              unset($supply['supply_name']);
+              array_push($supplies_array, $supply);
+            }
+          }
+          
+          $user['supplies'] = $supplies_array;
+
+          if ($user['supplies'] !== []) {
+            array_push($supply_release, $user);
+          }
+          
+        }
+
+        echo json_encode(array('status' => 'success',
+                                    'data' => $supply_release,
+                                    'method' => 'GET'
+                                  ));
+      
        //FIND SUPPLY FOR DROPDOWN
       } else if (isset($_GET['supply_name'])) {
 

@@ -273,6 +273,7 @@ class API
       if (isset($payload['department'])) {
         if (isset($payload['medicine_array'])) {
           $medicine_array = (array) $payload['medicine_array'];
+          // print_r($payload); return;
 
           $medicine_releases = [];
           
@@ -390,6 +391,8 @@ class API
         } else {
             $date_array = $payload['date'];
         }
+
+        $departments = ["Outpatient Department", "Dental", "Prenatal and Immunization", "Pharmacy", "Front Desk", "Admin Office"];
         
         // EDIT MEDICINE RELEASE (MASS)
         if (isset($payload['doctor_id'])) {
@@ -397,6 +400,8 @@ class API
         } else if (isset($payload['patient_id'])) {
           $this->db->where('patient_id', $payload['patient_id']);
         }
+
+        // print_r($payload); return;
 
         $this->db->where('release_date', $date_array, 'BETWEEN');
 
@@ -414,13 +419,15 @@ class API
           }
 
           $department = (array) $medicine['department'];
-          $to_insert['department'] = $department['department_id'] + 1;
+          $to_insert['department'] = isset($department['department_id']) ? $department['department_id'] + 1 : array_search($department, $departments) + 1;
 
           $medicine_details = (array) $medicine['medicine_details'];
-          $to_insert['medicine_id'] = $medicine_details['medicine_id'];
+          $to_insert['medicine_id'] = isset($medicine_details['medicine_id']) ? $medicine_details['medicine_id'] : $medicine_details[0];
           $to_insert['quantity'] = $medicine['quantity'];
           $to_insert['released_by'] = $payload['released_by'];
-          $to_insert['release_date'] = $medicine['release_date'];
+          $to_insert['release_date'] = isset($medicine['release_date']) ? $medicine['release_date'] : date('Y-m-d');
+
+          // print_r($to_insert);
 
           $medicine['med_release_id'] = $this->db->insert('tbl_medicine_release', $to_insert);
 
