@@ -82,7 +82,7 @@ class API
           $this->db->where('user_id', $user['user_id']);
           $this->db->where('release_date', $date_array, 'BETWEEN');
           $this->db->where('sr.status', 0);
-          $supplies = $this->db->get('tbl_supply_release sr', null, 'sr.supply_release_id, sr.supply_id, si.supply_name, sr.quantity, sr.release_date, sr.released_by, sr.status');
+          $supplies = $this->db->get('tbl_supply_release sr', null, 'sr.supply_id, si.supply_name, sr.quantity, sr.release_date, sr.released_by, sr.status');
 
           $supplies_array = [];
 
@@ -338,7 +338,65 @@ class API
     {
       $payload = (array) $payload;
 
-      if(isset($payload['department'])) {
+      if (isset($payload['supplies'])) {
+        // print_r($payload);
+
+        $date_array = [];
+
+        if ($payload['date'] === 'Today') {
+          $date_array = [date("Y-m-d"), date("Y-m-d")];
+
+        } else if ($payload['date']  === 'This Week') {
+            $today = new DateTime();
+            $week_start = clone $today;
+            $week_start->modify('last Sunday');
+            $week_end = clone $week_start;
+            $week_end->modify('+6 days');
+
+            $today = date_format($today, "Y-m-d");
+            $week_start = date_format($week_start, "Y-m-d");
+            $week_end = date_format($week_end, "Y-m-d");
+
+            $date_array = [$week_start, $week_end];
+            // print_r($date_array); return;
+
+        } else if ($payload['date'] === 'This Month') {
+            $date_array = [date('Y-m-01'), date('Y-m-t')];
+        } else if ($payload['date'] === 'This Year') {
+            $date_array = [date('Y-01-01'), date('Y-12-31')];
+        } else {
+            $date_array = $payload['date'];
+        }
+
+        $this->db->where('user_id', $payload['user_id']);
+        $this->db->where('release_date', $date_array, 'BETWEEN');
+        $this->db->delete('tbl_supply_release');
+
+        $supply_array = [];
+
+        foreach ($payload['supplies'] as $supply) {
+          $supply = (array) $supply;
+          $supply['user_id'] = $payload['user_id'];
+          $supply_details = (array) $supply['supply_details'];
+          $supply['supply_id'] = $supply_details['supply_id'];
+          unset($supply['supply_details']);
+          $supply['department'] = $payload['department'];
+          
+          $this->db->insert('tbl_supply_release', $supply);
+          unset($supply['supply_id']);
+          $supply['supply_details'] = $supply_details;
+
+          array_push($supply_array, $supply);
+        }
+
+        $payload['supplies'] = $supply_array;
+
+        echo json_encode(array('status' => 'success',
+                                  'data' => $payload,
+                                  'method' => 'PUT'
+                                ));
+
+      } else if(isset($payload['department'])) {
         //EDIT SUPPLY RELEASE RECORD
         $this->db->where('supply_release_id', $payload['supply_release_id']);
         $supply_release = $this->db->update('tbl_supply_release', $payload);
