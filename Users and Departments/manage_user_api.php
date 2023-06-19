@@ -150,7 +150,7 @@ class API
                                   'method' => 'POST'
                                 ));
         } else {
-          if (password_verify($payload['password'], $attempt[0]['password'])) {
+          if (password_verify($payload['password'], $attempt[0]['password']) && $attempt[0]['username'] === $payload['username']) {
               unset($attempt[0]['password']);
               echo json_encode(array('status' => 'success',
                                   'data' => $attempt,
