@@ -32,7 +32,7 @@ class API
   
         $this->db->join('tbl_users u', 'u.user_id=pn.midwife_id', 'LEFT');
         
-        $prenatal_records = $this->db->get('tbl_prenatal pn', null, 'prenatal_id, midwife_id, patient_id, last_menstruation, previous_full_term, previous_premature, midwifes_notes, pn.date_added, CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS midwife_name');
+        $prenatal_records = $this->db->get('tbl_prenatal pn', null, 'prenatal_id, midwife_id, patient_id, last_menstruation, previous_full_term, previous_premature, midwifes_notes, expected_date_delivery, pn.date_added, CONCAT(first_name, " ", last_name, IFNULL(CONCAT(" ", suffix), "")) AS midwife_name');
 
         $prenatal_checkup = [];
   
