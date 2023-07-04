@@ -97,14 +97,12 @@ class API
 
         //Get PWD count
         $this->db->join('tbl_patient_info p', 'p.patient_id=pw.patient_id', 'LEFT');
-        $this->db->where('pw.status', 0);
         $this->db->where('p.date_added', $date_array, 'BETWEEN');
         $pwd_count = $this->db->getValue('tbl_pwd pw', "count(*)");
         $data_array['pwd_count'] = $pwd_count;
 
         //Get SC count
         $this->db->join('tbl_patient_info p', 'p.patient_id=sc.patient_id', 'LEFT');
-        $this->db->where('sc.status', 0);
         $this->db->where('p.date_added', $date_array, 'BETWEEN');
         $sc_count = $this->db->getValue('tbl_senior_citizen sc', "count(*)");
         $data_array['sc_count'] = $sc_count;
