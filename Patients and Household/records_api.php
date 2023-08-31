@@ -136,6 +136,11 @@ class API
 
           $this->db->where('opd.status', 0);
 
+          if (isset($payload['date_added']) && count($payload['date_added']) === 2) {
+            $this->db->where('checkup_date', $payload['date_added'], 'BETWEEN');
+          }
+          
+
           $this->db->orderBy('checkup_date', 'DESC');
           $record = $this->db->get('tbl_opd opd', null, 'opd_id as record_id, checkup_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
 
@@ -154,6 +159,9 @@ class API
           }
 
           $this->db->where('d.status', 0);
+          if (isset($payload['date_added']) && count($payload['date_added']) === 2) {
+            $this->db->where('checkup_date', $payload['date_added'], 'BETWEEN');
+          }
 
           $this->db->orderBy('checkup_date', 'DESC');
           $record = $this->db->get('tbl_dental d', null, 'dental_id as record_id, checkup_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
@@ -174,6 +182,9 @@ class API
           }
 
           $this->db->where('pnl.status', 0);
+          if (isset($payload['date_added']) && count($payload['date_added']) === 2) {
+            $this->db->where('pnl.date_added', $payload['date_added'], 'BETWEEN');
+          }
 
           $this->db->orderBy('pnl.date_added', 'DESC');
           $record = $this->db->get('tbl_prenatal pnl', null, 'prenatal_id as record_id, pnl.date_added as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');
@@ -193,6 +204,9 @@ class API
           }
 
           $this->db->where('i.status', 0);
+          if (isset($payload['date_added']) && count($payload['date_added']) === 2) {
+            $this->db->where('immunization_date', $payload['date_added'], 'BETWEEN');
+          }
 
           $this->db->orderBy('immunization_date', 'DESC');
           $record = $this->db->get('tbl_immunization i', null, 'immunization_id as record_id, immunization_date as date, p.first_name, p.middle_name, p.last_name, p.suffix, p.patient_id');

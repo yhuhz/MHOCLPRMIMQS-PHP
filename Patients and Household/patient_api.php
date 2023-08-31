@@ -501,8 +501,8 @@ class API
           $this->db->where('DATEDIFF(CURRENT_DATE, birthdate)', Array (($filter['age'][0]*365), ($filter['age'][1]*365)), 'BETWEEN');
 
           //Date Added filter
-          if (isset($filter['date_added']) && $filter['date_added'] != [] && $filter['date_added'][0] != '' && $filter['date_added'][1] != '') {
-            $this->db->where('date_added', $filter['date_added'], 'BETWEEN');
+          if (isset($filter['date_added']) && count($filter['date_added']) === 2) {
+            $this->db->where('p.date_added', $filter['date_added'], 'BETWEEN');
           }
 
           //Sex filter
@@ -621,11 +621,11 @@ class API
         if (isset($pwd['pwd_id'])) {
           $pwd['patient_id'] = $patient_info['patient_id'];
 
-          $this->db->where('pwd_id', $pwd['pwd_id']);
+          $this->db->where('patient_id', $pwd['patient_id']);
           $pwd_check = $this->db->get('tbl_pwd');
 
           if ($pwd_check != []) {
-            $this->db->where('pwd_id', $pwd['pwd_id']);
+            $this->db->where('patient_id', $pwd['patient_id']);
             $this->db->update('tbl_pwd', $pwd);
           } else {
             $this->db->insert('tbl_pwd', $pwd);
@@ -639,11 +639,11 @@ class API
           $senior_citizen['patient_id'] = $patient_info['patient_id'];
 
 
-          $this->db->where('senior_citizen_id', $senior_citizen['senior_citizen_id']);
+          $this->db->where('patient_id', $senior_citizen['patient_id']);
           $sc_check = $this->db->get('tbl_senior_citizen');
 
           if ($sc_check != []) {
-            $this->db->where('senior_citizen_id', $senior_citizen['senior_citizen_id']);
+            $this->db->where('patient_id', $senior_citizen['patient_id']);
             $this->db->update('tbl_senior_citizen', $senior_citizen);
           } else {
             $this->db->insert('tbl_senior_citizen', $senior_citizen);
