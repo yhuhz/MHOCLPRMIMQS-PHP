@@ -671,7 +671,7 @@ class API
     public function httpDelete()
     {
         $this->db->where('patient_id', $_GET['patient_id']);
-        $delete_user = $this->db->update('tbl_patient_info', array('status' => 2));
+        $delete_user = $this->db->update('tbl_patient_info', array('status' => 1));
 
         if ($delete_user) {
             echo json_encode(array('status' => 'success',
