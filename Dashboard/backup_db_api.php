@@ -24,6 +24,7 @@ class API
       if (isset ($_GET['dbList'])) {
         $folderPath = '../sql';
 
+        //test
         $file_list = [];
         if (is_dir($folderPath)) {
             if ($handle = opendir($folderPath)) {
@@ -44,7 +45,7 @@ class API
                                   ));
 
       } else {
-        
+
         $connection = mysqli_connect('localhost','root','','mhoclprmimqs');
 
         $tables = array();
@@ -122,13 +123,13 @@ class API
 
       foreach($sql as $query){
           if (isset($query) && !empty($query) && $query !== ';' && $query !== '' && $query !== ' ') {
-            
-          
+
+
             $result = mysqli_query($connection,$query);
           }
         }
-        
-      
+
+
       fclose($handle);
       // echo 'Successfully imported';
 
