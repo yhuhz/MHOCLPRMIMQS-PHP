@@ -67,8 +67,55 @@ class API
         $check_queue = $this->db->get('tbl_queue');
 
         if ($check_queue === []) {
+
+          $listCheckup = [];
+
+          $this->db->where('patient_id', $_GET['patient_id']);
+          $this->db->where('checkup_date', date("Y-m-d"));
+          $check_opd = $this->db->get('tbl_opd');
+          if ($check_opd === []) {
+            array_push($listCheckup, 'OPD');
+          }
+
+          $this->db->where('patient_id', $_GET['patient_id']);
+          $this->db->where('checkup_date', date("Y-m-d"));
+          $check_dental = $this->db->get('tbl_dental');
+          if ($check_dental === []) {
+            array_push($listCheckup, 'Dental');
+          }
+
+          $this->db->where('patient_id', $_GET['patient_id']);
+          $this->db->where('immunization_date', date("Y-m-d"));
+          $check_immunization = $this->db->get('tbl_immunization');
+          if ($check_immunization === []) {
+            array_push($listCheckup, 'Immunization');
+          }
+
+          if ($_GET['sex']) {
+
+            $this->db->where('patient_id', $_GET['patient_id']);
+            $this->db->orderBy('date_added', 'DESC');
+            $prenatal = $this->db->get('tbl_prenatal');
+            if ($prenatal !== []) {
+              $this->db->where('prenatal_id', $prenatal[0]['prenatal_id']);
+              $this->db->where('checkup_date', date("Y-m-d"));
+              $check_prenatal = $this->db->get('tbl_prenatal_checkup');
+              if ($check_prenatal === []) {
+                array_push($listCheckup, 'Prenatal');
+              }
+            } else {
+              array_push($listCheckup, 'Prenatal');
+            }
+
+            
+          }
+          // echo json_encode(array('status' => 'success',
+          //                           'message' => 'Patient not on queue yet',
+          //                           'method' => 'GET'
+          //                         ));
+
           echo json_encode(array('status' => 'success',
-                                    'message' => 'Patient not on queue yet',
+                                    'data' => $listCheckup,
                                     'method' => 'GET'
                                   ));
         } else {
