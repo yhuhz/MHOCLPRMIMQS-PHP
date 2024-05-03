@@ -154,7 +154,7 @@ class API
 
             foreach($patients as $patient) {
                 $this->db->where('patient_id', $patient['patient_id']);
-                $this->db->where('status', 0);
+                // $this->db->where('status', 0);
                 $details = $this->db->get('tbl_patient_info', null, 'first_name, middle_name, last_name, suffix');
 
                 $patient['first_name'] = $details[0]['first_name'];
