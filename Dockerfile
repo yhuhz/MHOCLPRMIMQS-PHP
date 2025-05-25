@@ -34,8 +34,16 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
 
+# Copy .env file (use .env.example if .env doesn't exist in your repo)
+COPY .env ./
+
 # Copy the rest of the application
 COPY . .
+
+# Create storage directory if it doesn't exist
+RUN mkdir -p /var/www/html/storage && \
+    chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
 
 # Create storage directory if it doesn't exist (modified for your structure)
 RUN mkdir -p /var/www/html/storage && \
