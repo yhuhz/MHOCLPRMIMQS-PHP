@@ -1,22 +1,37 @@
 <?php
-// Tells the browser to allow code from any origin to access
 header("Access-Control-Allow-Origin: *");
-// Tells browsers whether to expose the response to the frontend JavaScript code when the request's credentials mode (Request.credentials) is include
 header("Access-Control-Allow-Credentials: true");
-// Specifies one or more methods allowed when accessing a resource in response to a preflight request
-header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
-// Used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  http_response_code(200);
+  exit;
+}
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 require_once('../include/MysqliDb.php');
 date_default_timezone_set('Asia/Manila');
 
 class API
 {
-    public function __construct()
-    {
-        $this->db = new MysqliDB('sql301.infinityfree.com', 'if0_39015495', 'WuMZuRKC0uj', 'if0_39015495_mhoclprmimqs');
+  public function __construct()
+  {
+
+    if (!isset($_SERVER['DB_HOST'], $_SERVER['DB_USER'], $_SERVER['DB_PASS'], $_SERVER['DB_NAME'])) {
+      die("Error: Missing environment variables!");
     }
+      $this->db = new MysqliDB(
+        $_SERVER['DB_HOST'], 
+        $_SERVER['DB_USER'], 
+        $_SERVER['DB_PASS'], 
+        $_SERVER['DB_NAME']
+      );
+  }
 
     public function httpGet($payload)
     {

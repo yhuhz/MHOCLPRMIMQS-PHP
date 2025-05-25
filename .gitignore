@@ -1,0 +1,16 @@
+# Ignore environment files (critical for security)
+.env
+
+# Ignore Composer dependencies (they can be reinstalled)
+vendor/
+
+# Ignore cache/log files
+*.log
+cache/
+
+# Ignore IDE/editor config files
+.idea/
+.vscode/
+
+# Ignore database backups (optional)
+sql/*.sql
