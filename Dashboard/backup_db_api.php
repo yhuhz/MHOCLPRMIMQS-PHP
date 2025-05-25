@@ -15,7 +15,7 @@ class API
 {
     public function __construct()
     {
-      $this->db = new MysqliDB('localhost', 'root', '', 'mhoclprmimqs');
+      $this->db = new MysqliDB('sql301.infinityfree.com', 'if0_39015495', 'WuMZuRKC0uj', 'if0_39015495_mhoclprmimqs');
     }
 
     public function httpGet()
