@@ -17,24 +17,20 @@ class API
 {
   protected $db;
     
-    public function __construct()
-    {
-        // Initialize using MysqliDb (from your included file)
-        $this->db = new MysqliDb([
-            'host' => getenv('DB_HOST'),
-            'username' => getenv('DB_USER'), 
-            'password' => getenv('DB_PASS'),
-            'db' => getenv('DB_NAME'),
-            'port' => 3306
-        ]);
-        
-        // Alternative simple check (remove after testing)
-        if (!$this->db) {
-            die("Database connection failed");
-        }
-    
-  
-  }
+    public function __construct() {
+    $this->db = new MysqliDb([
+        'host' => getenv('DB_HOST'), // sql.freedb.tech
+        'username' => getenv('DB_USER'), // freedb_yhuhz
+        'password' => getenv('DB_PASS'), // your-password
+        'db' => getenv('DB_NAME'), // freedb_MHOCLPRMIMQS
+        'port' => 3306,
+        'connect_timeout' => 5 // Fail fast if connection fails
+    ]);
+
+    if ($this->db->getLastError()) {
+        die("DB Error: " . $this->db->getLastError());
+    }
+}
 
     public function httpGet()
     {
