@@ -18,20 +18,28 @@ date_default_timezone_set('Asia/Manila');
 
 class API
 {
-  public function __construct()
+  protected $db;
+
+public function __construct()
   {
 
-    // Check both $_SERVER and getenv() for variables
-    $dbHost = $_SERVER['DB_HOST'] ?? getenv('DB_HOST');
-    $dbUser = $_SERVER['DB_USER'] ?? getenv('DB_USER');
-    $dbPass = $_SERVER['DB_PASS'] ?? getenv('DB_PASS');
-    $dbName = $_SERVER['DB_NAME'] ?? getenv('DB_NAME');
+   $dbHost = $_SERVER['DB_HOST'] ?? getenv('DB_HOST');
+        $dbUser = $_SERVER['DB_USER'] ?? getenv('DB_USER');
+        $dbPass = $_SERVER['DB_PASS'] ?? getenv('DB_PASS');
+        $dbName = $_SERVER['DB_NAME'] ?? getenv('DB_NAME');
 
-    if (empty($dbHost) || empty($dbUser) || empty($dbName)) {
-      die("Error: Missing database configuration!");
-    }
+        if (empty($dbHost) || empty($dbUser) || empty($dbName)) {
+            error_log("DB Config Missing: Host:{$dbHost} User:{$dbUser} DB:{$dbName}");
+            throw new Exception("Database configuration incomplete");
+        }
 
-    $this->db = new MysqliDB($dbHost, $dbUser, $dbPass, $dbName);
+        try {
+            $this->db = new MysqliDB($dbHost, $dbUser, $dbPass, $dbName);
+            $this->db->set_charset('utf8mb4');
+        } catch (Exception $e) {
+            error_log("DB Connection Failed: " . $e->getMessage());
+            throw new Exception("Database connection failed");
+        }
   
   }
 

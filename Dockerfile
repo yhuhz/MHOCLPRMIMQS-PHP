@@ -47,6 +47,11 @@ RUN chown -R www-data:www-data /var/www/html && \
     find /var/www/html -type d -exec chmod 755 {} \; && \
     find /var/www/html -type f -exec chmod 644 {} \;
 
+# Add this to your Dockerfile to debug network:
+RUN apt-get update && apt-get install -y iputils-ping dnsutils && \
+ping -c 4 google.com && \
+nslookup sql301.infinityfree.com
+
 EXPOSE 80
 
 # Add this to your Dockerfile (before CMD)
