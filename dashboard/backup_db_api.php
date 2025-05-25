@@ -10,20 +10,23 @@ date_default_timezone_set('Asia/Manila');
 class API
 {
   protected $db;
-
-public function __construct()
-  {
-
-   $db = new mysqli(
-    getenv('DB_HOST'), 
-    getenv('DB_USER'), 
-    getenv('DB_PASS'), 
-    getenv('DB_NAME')
-);
-
-if ($db->connect_error) {
-    die("Connection failed: " . $this->db->connect_error);
-}
+    
+    public function __construct()
+    {
+        // Initialize using MysqliDb (from your included file)
+        $this->db = new MysqliDb([
+            'host' => getenv('DB_HOST'),
+            'username' => getenv('DB_USER'), 
+            'password' => getenv('DB_PASS'),
+            'db' => getenv('DB_NAME'),
+            'port' => 3306
+        ]);
+        
+        // Alternative simple check (remove after testing)
+        if (!$this->db) {
+            die("Database connection failed");
+        }
+    
   
   }
 
