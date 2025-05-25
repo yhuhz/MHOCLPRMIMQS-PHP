@@ -45,11 +45,6 @@ RUN mkdir -p /var/www/html/storage && \
     chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html
 
-# Create storage directory if it doesn't exist (modified for your structure)
-RUN mkdir -p /var/www/html/storage && \
-    chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html
-
 # Configure Apache to use the correct document root
 ENV APACHE_DOCUMENT_ROOT /var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
