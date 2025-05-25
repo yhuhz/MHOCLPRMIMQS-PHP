@@ -22,15 +22,18 @@ class API
   public function __construct()
   {
 
-    if (!isset($_SERVER['DB_HOST'], $_SERVER['DB_USER'], $_SERVER['DB_PASS'], $_SERVER['DB_NAME'])) {
-      die("Error: Missing environment variables!");
+    // Check both $_SERVER and getenv() for variables
+    $dbHost = $_SERVER['DB_HOST'] ?? getenv('DB_HOST');
+    $dbUser = $_SERVER['DB_USER'] ?? getenv('DB_USER');
+    $dbPass = $_SERVER['DB_PASS'] ?? getenv('DB_PASS');
+    $dbName = $_SERVER['DB_NAME'] ?? getenv('DB_NAME');
+
+    if (empty($dbHost) || empty($dbUser) || empty($dbName)) {
+      die("Error: Missing database configuration!");
     }
-      $this->db = new MysqliDB(
-        $_SERVER['DB_HOST'], 
-        $_SERVER['DB_USER'], 
-        $_SERVER['DB_PASS'], 
-        $_SERVER['DB_NAME']
-      );
+
+    $this->db = new MysqliDB($dbHost, $dbUser, $dbPass, $dbName);
+  
   }
 
     public function httpGet($payload)
