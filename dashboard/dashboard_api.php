@@ -4,10 +4,7 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-  http_response_code(200);
-  exit;
-}
+
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -23,23 +20,16 @@ class API
 public function __construct()
   {
 
-   $dbHost = $_SERVER['DB_HOST'] ?? getenv('DB_HOST');
-        $dbUser = $_SERVER['DB_USER'] ?? getenv('DB_USER');
-        $dbPass = $_SERVER['DB_PASS'] ?? getenv('DB_PASS');
-        $dbName = $_SERVER['DB_NAME'] ?? getenv('DB_NAME');
+   $db = new mysqli(
+    getenv('DB_HOST'), 
+    getenv('DB_USER'), 
+    getenv('DB_PASS'), 
+    getenv('DB_NAME')
+);
 
-        if (empty($dbHost) || empty($dbUser) || empty($dbName)) {
-            error_log("DB Config Missing: Host:{$dbHost} User:{$dbUser} DB:{$dbName}");
-            throw new Exception("Database configuration incomplete");
-        }
-
-        try {
-            $this->db = new MysqliDB($dbHost, $dbUser, $dbPass, $dbName);
-            $this->db->set_charset('utf8mb4');
-        } catch (Exception $e) {
-            error_log("DB Connection Failed: " . $e->getMessage());
-            throw new Exception("Database connection failed");
-        }
+if ($db->connect_error) {
+    die("Connection failed: " . $this->db->connect_error);
+}
   
   }
 
